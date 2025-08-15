@@ -1,4 +1,3 @@
-import React from 'react'
 import { Users, TrendingUp, MessageCircle } from 'lucide-react'
 import { mockInfluencerData } from '../data/mockData'
 

@@ -1,4 +1,3 @@
-import React from 'react'
 import { mockHeatmapData } from '../data/mockData'
 
 export default function SentimentHeatmap() {

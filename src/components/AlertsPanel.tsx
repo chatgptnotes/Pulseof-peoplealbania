@@ -1,4 +1,3 @@
-import React from 'react'
 import { AlertTriangle, AlertCircle, Info, Clock } from 'lucide-react'
 import { mockAlertData } from '../data/mockData'
 

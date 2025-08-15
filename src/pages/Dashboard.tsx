@@ -1,4 +1,3 @@
-import React from 'react'
 import SentimentByIssue from '../components/SentimentByIssue'
 import SentimentTrends from '../components/SentimentTrends'
 import SentimentDistribution from '../components/SentimentDistribution'

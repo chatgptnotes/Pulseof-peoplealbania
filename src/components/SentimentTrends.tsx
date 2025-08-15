@@ -1,4 +1,3 @@
-import React from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Legend } from 'recharts'
 import { mockTrendData } from '../data/mockData'
 
