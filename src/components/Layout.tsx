@@ -21,6 +21,13 @@ export default function Layout({ children }: LayoutProps) {
     { name: 'Analytics', href: '/analytics', icon: PieChart, current: location.pathname === '/analytics' },
     { name: 'Reports', href: '/reports', icon: FileText, current: location.pathname === '/reports' },
     { name: 'Alerts', href: '/alerts', icon: AlertCircle, current: location.pathname === '/alerts' },
+    ...(user?.permissions.includes('submit_data') || user?.role === 'admin' ? [
+      { name: 'Data Kit', href: '/data-kit', icon: User, current: location.pathname === '/data-kit' },
+      { name: 'Submit Data', href: '/submit-data', icon: PieChart, current: location.pathname === '/submit-data' }
+    ] : []),
+    ...(user?.permissions.includes('verify_submissions') || user?.role === 'admin' ? [
+      { name: 'Data Tracking', href: '/data-tracking', icon: FileText, current: location.pathname === '/data-tracking' }
+    ] : []),
     { name: 'Settings', href: '/settings', icon: Settings, current: location.pathname === '/settings' }
   ]
 

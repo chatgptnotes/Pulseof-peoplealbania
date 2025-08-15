@@ -5,8 +5,11 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: 'admin' | 'analyst' | 'viewer';
+  role: 'admin' | 'analyst' | 'viewer' | 'ward-coordinator' | 'social-media' | 'survey-team' | 'truth-team';
   avatar?: string;
+  permissions: string[];
+  ward?: string;
+  constituency?: string;
 }
 
 interface AuthContextType {
@@ -14,6 +17,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
+  hasPermission: (permission: string) => boolean;
+  isWorker: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,9 +28,63 @@ interface AuthProviderProps {
 }
 
 const mockUsers: User[] = [
-  { id: '1', name: 'John Doe', email: 'admin@bettroi.com', role: 'admin' },
-  { id: '2', name: 'Jane Smith', email: 'analyst@bettroi.com', role: 'analyst' },
-  { id: '3', name: 'Bob Wilson', email: 'viewer@bettroi.com', role: 'viewer' }
+  { 
+    id: '1', 
+    name: 'John Doe', 
+    email: 'admin@bettroi.com', 
+    role: 'admin',
+    permissions: ['view_all', 'edit_all', 'manage_users', 'export_data', 'verify_submissions'],
+    constituency: 'All'
+  },
+  { 
+    id: '2', 
+    name: 'Jane Smith', 
+    email: 'analyst@bettroi.com', 
+    role: 'analyst',
+    permissions: ['view_analytics', 'verify_submissions', 'export_data'],
+    constituency: 'Central District'
+  },
+  { 
+    id: '3', 
+    name: 'Bob Wilson', 
+    email: 'viewer@bettroi.com', 
+    role: 'viewer',
+    permissions: ['view_dashboard'],
+    constituency: 'South District'
+  },
+  { 
+    id: '4', 
+    name: 'Priya Sharma', 
+    email: 'coordinator@bettroi.com', 
+    role: 'ward-coordinator',
+    permissions: ['submit_data', 'view_ward_data', 'verify_local'],
+    ward: 'Ward 15',
+    constituency: 'North District'
+  },
+  { 
+    id: '5', 
+    name: 'Rahul Kumar', 
+    email: 'social@bettroi.com', 
+    role: 'social-media',
+    permissions: ['submit_data', 'view_social_trends'],
+    constituency: 'East District'
+  },
+  { 
+    id: '6', 
+    name: 'Anjali Patel', 
+    email: 'survey@bettroi.com', 
+    role: 'survey-team',
+    permissions: ['submit_data', 'view_survey_results'],
+    constituency: 'West District'
+  },
+  { 
+    id: '7', 
+    name: 'Vikram Singh', 
+    email: 'truth@bettroi.com', 
+    role: 'truth-team',
+    permissions: ['submit_data', 'verify_submissions', 'view_alerts'],
+    constituency: 'Central District'
+  }
 ];
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -53,11 +112,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null);
   };
 
+  const hasPermission = (permission: string): boolean => {
+    return user?.permissions.includes(permission) || user?.role === 'admin' || false;
+  };
+
+  const isWorker = (): boolean => {
+    return ['ward-coordinator', 'social-media', 'survey-team', 'truth-team'].includes(user?.role || '');
+  };
+
   const value: AuthContextType = {
     user,
     login,
     logout,
-    isLoading
+    isLoading,
+    hasPermission,
+    isWorker
   };
 
   return (

@@ -103,9 +103,15 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         <div className="mt-6 p-4 bg-gray-50 rounded-lg">
           <h3 className="text-sm font-medium text-gray-900 mb-2">Demo Accounts:</h3>
           <div className="space-y-1 text-xs text-gray-600">
+            <div><strong>Management:</strong></div>
             <div>Admin: admin@bettroi.com / password</div>
             <div>Analyst: analyst@bettroi.com / password</div>
             <div>Viewer: viewer@bettroi.com / password</div>
+            <div className="pt-2"><strong>Field Workers:</strong></div>
+            <div>Ward Coordinator: coordinator@bettroi.com / password</div>
+            <div>Social Media: social@bettroi.com / password</div>
+            <div>Survey Team: survey@bettroi.com / password</div>
+            <div>Truth Team: truth@bettroi.com / password</div>
           </div>
         </div>
       </div>
