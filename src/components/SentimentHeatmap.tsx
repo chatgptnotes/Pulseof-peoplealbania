@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { mockHeatmapData } from '../data/mockData'
 
 export default function SentimentHeatmap() {
@@ -35,7 +36,7 @@ export default function SentimentHeatmap() {
             ))}
             
             {issues.map(issue => (
-              <React.Fragment key={issue}>
+              <Fragment key={issue}>
                 <div className="p-2 font-semibold text-right bg-gray-100">
                   {issue}
                 </div>
@@ -51,7 +52,7 @@ export default function SentimentHeatmap() {
                     </div>
                   )
                 })}
-              </React.Fragment>
+              </Fragment>
             ))}
           </div>
           
