@@ -25,10 +25,10 @@ export default function Dashboard() {
           <p className="text-gray-600">Real-time political intelligence and sentiment analysis</p>
         </div>
         <div className="flex space-x-3">
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 active:scale-95 transition-all duration-200 shadow-sm hover:shadow-md">
             Export Report
           </button>
-          <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+          <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all duration-200 shadow-sm hover:shadow-md">
             Settings
           </button>
         </div>
