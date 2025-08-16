@@ -1,18 +1,42 @@
-import { SentimentData, AlertData } from '../types';
+import { SentimentData, AlertData, SocialPost, TrendingTopic } from '../types';
 import { mockSentimentData } from '../data/mockData';
+import { SocialMediaMonitor, defaultMonitoringConfig } from './socialMediaMonitor';
+import { sentimentEngine } from './sentimentAnalysis';
 
 class RealTimeService {
   private listeners: Map<string, Set<(data: any) => void>> = new Map();
   private intervals: Map<string, NodeJS.Timeout> = new Map();
   private isConnected = false;
+  private socialMonitor: SocialMediaMonitor;
+  private recentAlerts: AlertData[] = [];
+  private liveMetrics: any = {};
+  private connectionRetryCount = 0;
+  private maxRetries = 3;
+
+  constructor() {
+    this.socialMonitor = new SocialMediaMonitor(defaultMonitoringConfig);
+    this.setupSocialMonitorSubscription();
+  }
 
   connect(): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        this.isConnected = true;
-        console.log('Real-time service connected');
-        resolve();
-      }, 1000);
+    return new Promise((resolve, reject) => {
+      try {
+        setTimeout(() => {
+          this.isConnected = true;
+          this.socialMonitor.startMonitoring();
+          this.connectionRetryCount = 0;
+          console.log('Real-time service connected with social media monitoring');
+          resolve();
+        }, 1000);
+      } catch (error) {
+        this.connectionRetryCount++;
+        if (this.connectionRetryCount < this.maxRetries) {
+          console.log(`Connection attempt ${this.connectionRetryCount} failed, retrying...`);
+          setTimeout(() => this.connect().then(resolve).catch(reject), 2000);
+        } else {
+          reject(new Error('Failed to connect after maximum retries'));
+        }
+      }
     });
   }
 
@@ -20,6 +44,7 @@ class RealTimeService {
     this.intervals.forEach(interval => clearInterval(interval));
     this.intervals.clear();
     this.listeners.clear();
+    this.socialMonitor.stopMonitoring();
     this.isConnected = false;
     console.log('Real-time service disconnected');
   }
@@ -98,6 +123,9 @@ class RealTimeService {
       case 'influencers-live':
         data = this.generateInfluencerUpdate();
         break;
+      case 'social-media-live':
+        // This is handled by the social monitor subscription
+        return;
       default:
         return;
     }
@@ -119,32 +147,12 @@ class RealTimeService {
   }
 
   private generateAlertUpdate(): { type: 'new-alert'; data: AlertData } | null {
-    if (Math.random() < 0.3) { // 30% chance of new alert
-      const issues = ['Jobs', 'Infrastructure', 'Health', 'Education', 'Law & Order'];
-      const wards = ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'];
-      const severities: ('low' | 'medium' | 'high')[] = ['low', 'medium', 'high'];
-      
-      const alertTitles = [
-        'Sentiment spike detected',
-        'Negative trend emerging', 
-        'Positive feedback increasing',
-        'Discussion volume surge',
-        'Regional sentiment shift'
-      ];
-
-      const newAlert: AlertData = {
-        id: `alert-${Date.now()}`,
-        title: alertTitles[Math.floor(Math.random() * alertTitles.length)],
-        description: `Real-time alert generated at ${new Date().toLocaleTimeString()}`,
-        severity: severities[Math.floor(Math.random() * severities.length)],
-        timestamp: new Date(),
-        issue: Math.random() > 0.3 ? issues[Math.floor(Math.random() * issues.length)] : undefined,
-        ward: Math.random() > 0.4 ? wards[Math.floor(Math.random() * wards.length)] : undefined
-      };
-
+    // Return real alerts from social media monitoring
+    if (this.recentAlerts.length > 0) {
+      const alert = this.recentAlerts.shift()!;
       return {
         type: 'new-alert',
-        data: newAlert
+        data: alert
       };
     }
     
@@ -169,18 +177,35 @@ class RealTimeService {
   }
 
   private generateMetricsUpdate(): { type: 'metrics-update'; data: any } {
+    const recentPosts = this.socialMonitor.getRecentPosts(100);
+    const avgSentiment = recentPosts.length > 0 
+      ? recentPosts.reduce((sum, post) => sum + post.sentiment.sentiment, 0) / recentPosts.length
+      : 0.6;
+    
+    const platformDistribution = recentPosts.reduce((acc, post) => {
+      acc[post.source.platform] = (acc[post.source.platform] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
     return {
       type: 'metrics-update',
       data: {
-        overallSentiment: Math.round((0.6 + Math.random() * 0.3) * 100),
-        activeConversations: Math.round(12000 + Math.random() * 2000),
-        criticalAlerts: Math.floor(Math.random() * 5),
+        overallSentiment: Math.round(avgSentiment * 100),
+        activeConversations: recentPosts.length * 10, // Approximate total conversations
+        criticalAlerts: this.recentAlerts.filter(a => a.severity === 'critical').length,
         lastUpdate: new Date().toISOString(),
         engagement: {
-          twitter: Math.round(80 + Math.random() * 15),
-          facebook: Math.round(70 + Math.random() * 20),
-          instagram: Math.round(75 + Math.random() * 15)
-        }
+          twitter: platformDistribution.twitter || 0,
+          facebook: platformDistribution.facebook || 0,
+          instagram: platformDistribution.instagram || 0,
+          youtube: platformDistribution.youtube || 0,
+          news: platformDistribution.news || 0
+        },
+        trendingTopics: this.socialMonitor.getTrendingTopics().slice(0, 5),
+        totalPosts: recentPosts.length,
+        avgEngagement: recentPosts.length > 0 
+          ? Math.round(recentPosts.reduce((sum, post) => sum + post.source.engagement, 0) / recentPosts.length)
+          : 0
       }
     };
   }
@@ -205,10 +230,122 @@ class RealTimeService {
 
   simulateConnectionIssue(): void {
     this.isConnected = false;
+    this.socialMonitor.stopMonitoring();
     setTimeout(() => {
       this.isConnected = true;
+      this.socialMonitor.startMonitoring();
       console.log('Connection restored');
     }, 5000);
+  }
+
+  // New methods for enhanced functionality
+  private setupSocialMonitorSubscription(): void {
+    this.socialMonitor.subscribe((update) => {
+      if (update.type === 'posts_update') {
+        // Store alerts from social media monitoring
+        if (update.data.alerts && update.data.alerts.length > 0) {
+          this.recentAlerts.push(...update.data.alerts);
+          // Keep only recent alerts (last 100)
+          this.recentAlerts = this.recentAlerts.slice(-100);
+        }
+
+        // Update live metrics
+        this.liveMetrics = {
+          newPosts: update.data.new_posts?.length || 0,
+          totalPosts: update.data.total_posts || 0,
+          trendingTopics: update.data.trending_topics || [],
+          lastUpdate: new Date()
+        };
+
+        // Notify listeners of social media updates
+        this.notifyListeners('social-media-live', {
+          type: 'social-media-update',
+          data: update.data
+        });
+      }
+    });
+  }
+
+  private notifyListeners(channel: string, data: any): void {
+    const listeners = this.listeners.get(channel);
+    if (listeners) {
+      listeners.forEach(callback => {
+        try {
+          callback(data);
+        } catch (error) {
+          console.error('Error in real-time listener callback:', error);
+        }
+      });
+    }
+  }
+
+  // Public methods for external access
+  getSocialMediaPosts(limit?: number): SocialPost[] {
+    return this.socialMonitor.getRecentPosts(limit);
+  }
+
+  getTrendingTopics(): TrendingTopic[] {
+    return this.socialMonitor.getTrendingTopics();
+  }
+
+  searchSocialMedia(query: string): SocialPost[] {
+    return this.socialMonitor.searchPosts(query);
+  }
+
+  getInfluencers(): any[] {
+    return this.socialMonitor.getInfluencers();
+  }
+
+  updateMonitoringConfig(config: any): void {
+    this.socialMonitor.updateConfig(config);
+  }
+
+  getRecentAlerts(): AlertData[] {
+    return this.recentAlerts.slice(-20); // Return last 20 alerts
+  }
+
+  acknowledgeAlert(alertId: string): void {
+    const alert = this.recentAlerts.find(a => a.id === alertId);
+    if (alert) {
+      alert.status = 'acknowledged';
+    }
+  }
+
+  resolveAlert(alertId: string, notes?: string): void {
+    const alert = this.recentAlerts.find(a => a.id === alertId);
+    if (alert) {
+      alert.status = 'resolved';
+      if (notes) {
+        alert.resolution_notes = notes;
+      }
+    }
+  }
+
+  // Analytics methods
+  getSentimentTrends(timeWindow: 'hour' | 'day' | 'week' = 'day'): any {
+    const posts = this.socialMonitor.getRecentPosts();
+    const sentiments = posts.map(post => post.sentiment);
+    return sentimentEngine.analyzeTrends(sentiments, timeWindow);
+  }
+
+  detectAnomalies(): any[] {
+    const posts = this.socialMonitor.getRecentPosts();
+    const sentiments = posts.map(post => post.sentiment);
+    return sentimentEngine.detectAnomalies(sentiments);
+  }
+
+  getHealthStatus(): {
+    connected: boolean;
+    socialMonitoring: boolean;
+    lastUpdate: Date;
+    errorCount: number;
+  } {
+    return {
+      connected: this.isConnected,
+      socialMonitoring: this.socialMonitor ? true : false,
+      lastUpdate: this.liveMetrics.lastUpdate || new Date(),
+      errorCount: this.connectionRetryCount
+    };
   }
 }
 

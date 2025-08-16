@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { BarChart3, AlertCircle, FileText, Settings, Menu, X, Home, PieChart, LogOut, User } from 'lucide-react'
+import { BarChart3, AlertCircle, FileText, Settings, Menu, X, Home, PieChart, LogOut, User, ToggleLeft, Vote } from 'lucide-react'
 import RealTimeIndicator from './RealTimeIndicator'
 import LoginModal from './LoginModal'
 import { useAuth } from '../contexts/AuthContext'
@@ -19,6 +19,8 @@ export default function Layout({ children }: LayoutProps) {
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home, current: location.pathname === '/' || location.pathname === '/dashboard' },
     { name: 'Analytics', href: '/analytics', icon: PieChart, current: location.pathname === '/analytics' },
+    { name: 'Political Choice', href: '/political-choice', icon: ToggleLeft, current: location.pathname === '/political-choice', external: true },
+    { name: 'Political Polling', href: '/political-polling', icon: Vote, current: location.pathname === '/political-polling', external: true },
     { name: 'Reports', href: '/reports', icon: FileText, current: location.pathname === '/reports' },
     { name: 'Alerts', href: '/alerts', icon: AlertCircle, current: location.pathname === '/alerts' },
     ...(user?.permissions.includes('submit_data') || user?.role === 'admin' ? [
@@ -31,8 +33,12 @@ export default function Layout({ children }: LayoutProps) {
     { name: 'Settings', href: '/settings', icon: Settings, current: location.pathname === '/settings' }
   ]
 
-  const handleNavigation = (href: string) => {
-    navigate(href)
+  const handleNavigation = (href: string, external?: boolean) => {
+    if (external) {
+      window.location.href = href
+    } else {
+      navigate(href)
+    }
     setSidebarOpen(false)
   }
 
@@ -65,7 +71,7 @@ export default function Layout({ children }: LayoutProps) {
               {navigation.map((item) => (
                 <button
                   key={item.name}
-                  onClick={() => handleNavigation(item.href)}
+                  onClick={() => handleNavigation(item.href, item.external)}
                   className={`w-full group flex items-center px-2 py-2 text-base font-medium rounded-md transition-colors ${
                     item.current
                       ? 'bg-blue-100 text-blue-900'
@@ -96,7 +102,7 @@ export default function Layout({ children }: LayoutProps) {
               {navigation.map((item) => (
                 <button
                   key={item.name}
-                  onClick={() => handleNavigation(item.href)}
+                  onClick={() => handleNavigation(item.href, item.external)}
                   className={`w-full group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${
                     item.current
                       ? 'bg-blue-100 text-blue-900'

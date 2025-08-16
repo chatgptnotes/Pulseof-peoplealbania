@@ -7,15 +7,135 @@ import SentimentHeatmap from '../components/SentimentHeatmap'
 import InfluencerTracking from '../components/InfluencerTracking'
 import AlertsPanel from '../components/AlertsPanel'
 import IndiaMap from '../components/IndiaMap'
-import { TrendingUp, Users, AlertTriangle, Target, Calendar } from 'lucide-react'
+import ExportManager from '../components/ExportManager'
+import AdvancedChart from '../components/AdvancedChart'
+import { TrendingUp, Users, AlertTriangle, Target, Calendar, Brain, Zap, Globe, Lightbulb } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { realTimeService } from '../services/realTimeService'
+import { crisisDetection } from '../services/crisisDetection'
+import { recommendationsEngine } from '../services/recommendationsEngine'
+
 
 export default function Dashboard() {
+  const [liveMetrics, setLiveMetrics] = useState<any>(null);
+  const [activeAlerts, setActiveAlerts] = useState<any[]>([]);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [trendingTopics, setTrendingTopics] = useState<any[]>([]);
+  const [recentPosts, setRecentPosts] = useState<any[]>([]);
+  const [showAdvancedFeatures, setShowAdvancedFeatures] = useState(false);
+
+  // Initialize real-time services
+  useEffect(() => {
+    const initServices = async () => {
+      try {
+        await realTimeService.connect();
+        crisisDetection.startMonitoring();
+        
+        // Update context for recommendations
+        const context = {
+          current_sentiment: {
+            overall: 0.67,
+            by_issue: {
+              'jobs': 0.45,
+              'infrastructure': 0.55,
+              'health': 0.72,
+              'education': 0.60
+            },
+            by_location: {
+              'Mumbai': 0.68,
+              'Pune': 0.71,
+              'Nashik': 0.52
+            },
+            trend_direction: 'improving' as const
+          },
+          trending_topics: realTimeService.getTrendingTopics(),
+          recent_posts: realTimeService.getSocialMediaPosts(50),
+          active_crises: crisisDetection.getActiveEvents(),
+          field_reports: [],
+          competitor_activity: {
+            sentiment: 0.45,
+            volume: 250,
+            key_messages: ['Development promises', 'Anti-corruption stance']
+          },
+          campaign_calendar: {
+            upcoming_events: [
+              {
+                date: new Date(Date.now() + 86400000 * 3),
+                type: 'rally' as const,
+                location: 'Mumbai',
+                expected_attendance: 5000
+              }
+            ],
+            recent_activities: []
+          },
+          resource_availability: {
+            budget: 10000000,
+            volunteers: 500,
+            time_to_election: 45,
+            key_demographics: ['Youth', 'Urban professionals', 'Rural voters']
+          }
+        };
+        
+        recommendationsEngine.updateContext(context);
+        await recommendationsEngine.generateRecommendations();
+        
+        console.log('Dashboard services initialized successfully');
+      } catch (error) {
+        console.error('Failed to initialize dashboard services:', error);
+      }
+    };
+    
+    initServices();
+    
+    // Set up real-time subscriptions
+    const unsubscribeMetrics = realTimeService.subscribe('metrics-live', (data: any) => {
+      setLiveMetrics(data.data);
+    });
+    
+    const unsubscribeAlerts = realTimeService.subscribe('alerts-live', (data: any) => {
+      if (data.data) {
+        setActiveAlerts(prev => [data.data, ...prev.slice(0, 9)]);
+      }
+    });
+    
+    const unsubscribeCrisis = crisisDetection.subscribe((event) => {
+      setActiveAlerts(prev => [{
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        severity: event.severity,
+        timestamp: event.detected_at,
+        type: 'crisis'
+      }, ...prev.slice(0, 9)]);
+    });
+    
+    const unsubscribeRecommendations = recommendationsEngine.subscribe((recs) => {
+      setRecommendations(recs.slice(0, 5));
+    });
+    
+    // Update data periodically
+    const interval = setInterval(() => {
+      setTrendingTopics(realTimeService.getTrendingTopics().slice(0, 8));
+      setRecentPosts(realTimeService.getSocialMediaPosts(10));
+    }, 30000);
+    
+    return () => {
+      unsubscribeMetrics();
+      unsubscribeAlerts();
+      unsubscribeCrisis();
+      unsubscribeRecommendations();
+      clearInterval(interval);
+      realTimeService.disconnect();
+      crisisDetection.stopMonitoring();
+    };
+  }, []);
+
   const kpis = [
-    { label: 'Overall Sentiment', value: '67%', change: '+5%', icon: TrendingUp, color: 'text-green-600' },
-    { label: 'Active Conversations', value: '12.5K', change: '+15%', icon: Users, color: 'text-blue-600' },
-    { label: 'Critical Alerts', value: '3', change: '-2', icon: AlertTriangle, color: 'text-red-600' },
-    { label: 'Top Issue', value: 'Jobs', change: '25%', icon: Target, color: 'text-purple-600' },
-    { label: 'Last Updated', value: '2 min', change: 'ago', icon: Calendar, color: 'text-gray-600' }
+    { label: 'Overall Sentiment', value: liveMetrics?.overallSentiment ? `${liveMetrics.overallSentiment}%` : '67%', change: '+5%', icon: TrendingUp, color: 'text-green-600' },
+    { label: 'Active Conversations', value: liveMetrics?.activeConversations?.toLocaleString() || '12.5K', change: '+15%', icon: Users, color: 'text-blue-600' },
+    { label: 'Critical Alerts', value: activeAlerts.filter(a => a.severity === 'critical').length.toString() || '3', change: '-2', icon: AlertTriangle, color: 'text-red-600' },
+    { label: 'Top Issue', value: trendingTopics[0]?.keyword || 'Jobs', change: '25%', icon: Target, color: 'text-purple-600' },
+    { label: 'Last Updated', value: liveMetrics?.lastUpdate ? new Date(liveMetrics.lastUpdate).toLocaleTimeString() : '2 min', change: 'ago', icon: Calendar, color: 'text-gray-600' }
   ]
 
   const indiaMapData = [
@@ -49,30 +169,196 @@ export default function Dashboard() {
           <p className="text-gray-600">Real-time political intelligence and sentiment analysis</p>
         </div>
         <div className="flex space-x-3">
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 active:scale-95 transition-all duration-200 shadow-sm hover:shadow-md">
-            Export Report
-          </button>
-          <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all duration-200 shadow-sm hover:shadow-md">
-            Settings
+          <ExportManager className="inline-block" />
+          <button 
+            onClick={() => setShowAdvancedFeatures(!showAdvancedFeatures)}
+            className={`px-4 py-2 ${showAdvancedFeatures ? 'bg-purple-600 text-white' : 'border border-gray-300 text-gray-700'} rounded-lg hover:bg-purple-700 active:bg-purple-800 active:scale-95 transition-all duration-200 shadow-sm hover:shadow-md`}
+          >
+            <Brain className="w-4 h-4 inline mr-2" />
+            AI Features
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        {kpis.map((kpi, index) => (
-          <div key={index} className="metric-card">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">{kpi.label}</p>
-                <p className="text-2xl font-bold text-gray-900">{kpi.value}</p>
-                <p className={`text-sm ${kpi.color}`}>{kpi.change}</p>
+        {kpis.map((kpi, index) => {
+          // Use live metrics if available
+          const liveValue = liveMetrics && index === 0 ? `${liveMetrics.overallSentiment}%` :
+                          liveMetrics && index === 1 ? liveMetrics.activeConversations?.toLocaleString() :
+                          liveMetrics && index === 2 ? liveMetrics.criticalAlerts?.toString() :
+                          kpi.value;
+          
+          return (
+            <div key={index} className="metric-card relative">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">{kpi.label}</p>
+                  <p className="text-2xl font-bold text-gray-900">{liveValue}</p>
+                  <p className={`text-sm ${kpi.color}`}>{kpi.change}</p>
+                </div>
+                <kpi.icon className={`w-8 h-8 ${kpi.color}`} />
               </div>
-              <kpi.icon className={`w-8 h-8 ${kpi.color}`} />
+              {liveMetrics && index === 0 && (
+                <div className="absolute top-2 right-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" title="Live data"></div>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
+      {/* AI-Powered Features Section */}
+      {showAdvancedFeatures && (
+        <div className="space-y-6 border-2 border-purple-200 rounded-lg p-6 bg-purple-50">
+          <div className="flex items-center space-x-2 mb-4">
+            <Brain className="w-6 h-6 text-purple-600" />
+            <h2 className="text-xl font-bold text-purple-900">AI-Powered Intelligence</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {/* Crisis Alerts */}
+            {activeAlerts.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm border border-red-200 p-4">
+                <div className="flex items-center space-x-2 mb-3">
+                  <AlertTriangle className="w-5 h-5 text-red-600" />
+                  <h3 className="font-semibold text-red-900">Crisis Detection</h3>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {activeAlerts.slice(0, 3).map((alert, index) => (
+                    <div key={index} className={`p-2 rounded text-xs ${
+                      alert.severity === 'critical' ? 'bg-red-100 text-red-800' :
+                      alert.severity === 'high' ? 'bg-orange-100 text-orange-800' :
+                      'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      <div className="font-medium">{alert.title}</div>
+                      <div className="text-xs opacity-75">{alert.description}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* AI Recommendations */}
+            {recommendations.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm border border-blue-200 p-4">
+                <div className="flex items-center space-x-2 mb-3">
+                  <Lightbulb className="w-5 h-5 text-blue-600" />
+                  <h3 className="font-semibold text-blue-900">AI Recommendations</h3>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {recommendations.slice(0, 3).map((rec, index) => (
+                    <div key={index} className={`p-2 rounded text-xs ${
+                      rec.priority === 'urgent' ? 'bg-red-100 text-red-800' :
+                      rec.priority === 'high' ? 'bg-orange-100 text-orange-800' :
+                      'bg-blue-100 text-blue-800'
+                    }`}>
+                      <div className="font-medium">{rec.title}</div>
+                      <div className="text-xs opacity-75">{rec.description}</div>
+                      <div className="text-xs mt-1 font-medium">Impact: {rec.estimated_impact} | Confidence: {Math.round(rec.confidence_score * 100)}%</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Trending Topics */}
+            {trendingTopics.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm border border-green-200 p-4">
+                <div className="flex items-center space-x-2 mb-3">
+                  <Zap className="w-5 h-5 text-green-600" />
+                  <h3 className="font-semibold text-green-900">Trending Topics</h3>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {trendingTopics.slice(0, 5).map((topic, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 bg-green-50 rounded text-xs">
+                      <div>
+                        <div className="font-medium text-green-800">{topic.keyword}</div>
+                        <div className="text-green-600">Volume: {topic.volume} | Growth: +{Math.round(topic.growth_rate * 100)}%</div>
+                      </div>
+                      <div className={`px-2 py-1 rounded text-xs ${
+                        topic.sentiment_score > 0.1 ? 'bg-green-200 text-green-800' :
+                        topic.sentiment_score < -0.1 ? 'bg-red-200 text-red-800' :
+                        'bg-gray-200 text-gray-800'
+                      }`}>
+                        {topic.sentiment_score > 0.1 ? '😊' : topic.sentiment_score < -0.1 ? '😟' : '😐'}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Advanced Visualizations */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {liveMetrics?.trendingTopics && (
+              <AdvancedChart
+                type="doughnut"
+                title="Platform Distribution"
+                subtitle="Posts by social media platform"
+                data={{
+                  labels: ['Twitter', 'Facebook', 'Instagram', 'YouTube', 'News'],
+                  datasets: [{
+                    label: 'Posts',
+                    data: [
+                      liveMetrics.engagement?.twitter || 0,
+                      liveMetrics.engagement?.facebook || 0,
+                      liveMetrics.engagement?.instagram || 0,
+                      liveMetrics.engagement?.youtube || 0,
+                      liveMetrics.engagement?.news || 0
+                    ],
+                    backgroundColor: [
+                      '#1DA1F2',
+                      '#4267B2', 
+                      '#E4405F',
+                      '#FF0000',
+                      '#6B7280'
+                    ]
+                  }]
+                }}
+                height={250}
+                showExport={true}
+              />
+            )}
+            
+            {recentPosts.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <div className="flex items-center space-x-2 mb-3">
+                  <Globe className="w-5 h-5 text-gray-600" />
+                  <h3 className="font-semibold text-gray-900">Recent Social Media Activity</h3>
+                </div>
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {recentPosts.slice(0, 5).map((post, index) => (
+                    <div key={index} className="p-2 bg-gray-50 rounded text-xs">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-medium text-gray-800">{post.source?.platform || 'Social Media'}</span>
+                        <span className={`px-1 py-0.5 rounded text-xs ${
+                          post.sentiment?.polarity === 'positive' ? 'bg-green-200 text-green-800' :
+                          post.sentiment?.polarity === 'negative' ? 'bg-red-200 text-red-800' :
+                          'bg-gray-200 text-gray-800'
+                        }`}>
+                          {post.sentiment?.polarity || 'neutral'}
+                        </span>
+                      </div>
+                      <div className="text-gray-600 truncate">
+                        {post.content?.substring(0, 100) || 'Sample social media content'}...
+                      </div>
+                      <div className="text-gray-500 mt-1">
+                        {post.engagement_metrics ? 
+                          `👍 ${post.engagement_metrics.likes} 🔄 ${post.engagement_metrics.shares} 💬 ${post.engagement_metrics.comments}` :
+                          'Engagement metrics'
+                        }
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <div className="xl:col-span-2">
           <IndiaMap data={indiaMapData} height={400} />
@@ -92,6 +378,56 @@ export default function Dashboard() {
         <InfluencerTracking />
         <AlertsPanel />
       </div>
+      
+      {/* Enhanced Analytics Section */}
+      {showAdvancedFeatures && liveMetrics && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <AdvancedChart
+            type="line"
+            title="Real-time Sentiment Trends"
+            subtitle="Multi-language sentiment analysis over time"
+            data={{
+              labels: ['6h ago', '5h ago', '4h ago', '3h ago', '2h ago', '1h ago', 'Now'],
+              datasets: [{
+                label: 'Overall Sentiment',
+                data: [0.65, 0.62, 0.68, 0.70, 0.67, 0.69, liveMetrics.overallSentiment / 100],
+                borderColor: '#3B82F6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.4,
+                fill: true
+              }]
+            }}
+            height={300}
+            showExport={true}
+            showFilters={true}
+            showZoom={true}
+          />
+          
+          <AdvancedChart
+            type="bar"
+            title="Issue Sentiment Distribution"
+            subtitle="Sentiment analysis by key political issues"
+            data={{
+              labels: ['Jobs', 'Healthcare', 'Education', 'Infrastructure', 'Law & Order'],
+              datasets: [{
+                label: 'Positive Sentiment',
+                data: [45, 72, 60, 55, 48],
+                backgroundColor: '#10B981'
+              }, {
+                label: 'Negative Sentiment', 
+                data: [35, 18, 25, 30, 42],
+                backgroundColor: '#EF4444'
+              }, {
+                label: 'Neutral Sentiment',
+                data: [20, 10, 15, 15, 10],
+                backgroundColor: '#6B7280'
+              }]
+            }}
+            height={300}
+            showExport={true}
+          />
+        </div>
+      )}
     </div>
   )
 }

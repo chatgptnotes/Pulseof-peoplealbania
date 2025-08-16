@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer, ScatterChart, Scatter } from 'recharts';
-import { TrendingUp, BarChart3, Activity, Calendar, Users, MessageCircle, Eye } from 'lucide-react';
+import { TrendingUp, BarChart3, Activity, Calendar, Users, MessageCircle, Eye, Brain, Target, Zap, Database, UserCheck } from 'lucide-react';
+import SocialMediaMonitoring from '../components/SocialMediaMonitoring';
+import CompetitorTracking from '../components/CompetitorTracking';
+import AIInsightsEngine from '../components/AIInsightsEngine';
+import VoterDatabase from '../components/VoterDatabase';
+import FieldWorkerManagement from '../components/FieldWorkerManagement';
 import { useSentimentData, useTrendData } from '../hooks/useSentimentData';
 import { calculateSentimentTrend, getTopIssues, formatNumber } from '../utils/dataProcessing';
 import { CHART_COLORS } from '../utils/constants';
@@ -8,6 +13,7 @@ import { CHART_COLORS } from '../utils/constants';
 export default function Analytics() {
   const [timeRange, setTimeRange] = useState('30d');
   const [activeChart, setActiveChart] = useState('sentiment-overview');
+  const [activeTab, setActiveTab] = useState('traditional');
 
   const { data: sentimentData } = useSentimentData();
   const { data: trendData } = useTrendData(timeRange);
@@ -79,12 +85,21 @@ export default function Analytics() {
     }
   ];
 
+  const tabs = [
+    { id: 'traditional', label: 'Traditional Analytics', icon: BarChart3 },
+    { id: 'social-media', label: 'Social Media Monitoring', icon: MessageCircle },
+    { id: 'competitor', label: 'Competitor Tracking', icon: Target },
+    { id: 'ai-insights', label: 'AI Insights', icon: Brain },
+    { id: 'voter-database', label: 'Voter Database', icon: Database },
+    { id: 'field-workers', label: 'Field Workers', icon: UserCheck }
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
-          <p className="text-gray-600">Deep insights and data analysis</p>
+          <h1 className="text-2xl font-bold text-gray-900">Advanced Analytics Suite</h1>
+          <p className="text-gray-600">Comprehensive political intelligence and competitive analysis</p>
         </div>
         <div className="flex items-center space-x-3">
           <select
@@ -104,7 +119,30 @@ export default function Analytics() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Tab Navigation */}
+      <div className="border-b border-gray-200">
+        <nav className="-mb-px flex space-x-8">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === tab.id
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <tab.icon className="w-5 h-5 mr-2" />
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === 'traditional' && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((kpi, index) => (
           <div key={index} className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center justify-between">
@@ -287,6 +325,18 @@ export default function Analytics() {
           </div>
         </div>
       </div>
+        </div>
+      )}
+
+      {activeTab === 'social-media' && <SocialMediaMonitoring />}
+      
+      {activeTab === 'competitor' && <CompetitorTracking />}
+      
+      {activeTab === 'ai-insights' && <AIInsightsEngine />}
+      
+      {activeTab === 'voter-database' && <VoterDatabase />}
+      
+      {activeTab === 'field-workers' && <FieldWorkerManagement />}
     </div>
   );
 }
