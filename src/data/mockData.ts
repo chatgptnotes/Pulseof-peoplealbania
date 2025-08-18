@@ -1,11 +1,11 @@
 import { SentimentData, TrendData, CompetitorData, HeatmapData, InfluencerData, AlertData } from '../types';
 
 export const mockSentimentData: SentimentData[] = [
-  { issue: 'Jobs', sentiment: 0.65, polarity: 'positive', intensity: 0.8, emotion: 'hope' },
-  { issue: 'Infrastructure', sentiment: 0.52, polarity: 'neutral', intensity: 0.6, emotion: 'trust' },
-  { issue: 'Health', sentiment: 0.72, polarity: 'positive', intensity: 0.9, emotion: 'trust' },
-  { issue: 'Education', sentiment: 0.58, polarity: 'neutral', intensity: 0.7, emotion: 'hope' },
-  { issue: 'Law & Order', sentiment: 0.54, polarity: 'neutral', intensity: 0.6, emotion: 'fear' }
+  { issue: 'Jobs', sentiment: 0.65, polarity: 'positive', intensity: 0.8, emotion: 'hope', confidence: 0.85, language: 'en', source: 'social_media', timestamp: new Date() },
+  { issue: 'Infrastructure', sentiment: 0.52, polarity: 'neutral', intensity: 0.6, emotion: 'trust', confidence: 0.78, language: 'en', source: 'social_media', timestamp: new Date() },
+  { issue: 'Health', sentiment: 0.72, polarity: 'positive', intensity: 0.9, emotion: 'trust', confidence: 0.92, language: 'en', source: 'social_media', timestamp: new Date() },
+  { issue: 'Education', sentiment: 0.58, polarity: 'neutral', intensity: 0.7, emotion: 'hope', confidence: 0.81, language: 'en', source: 'social_media', timestamp: new Date() },
+  { issue: 'Law & Order', sentiment: 0.54, polarity: 'neutral', intensity: 0.6, emotion: 'fear', confidence: 0.75, language: 'en', source: 'social_media', timestamp: new Date() }
 ];
 
 export const mockTrendData: TrendData[] = [

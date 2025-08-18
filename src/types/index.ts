@@ -103,6 +103,15 @@ export interface SocialPost {
   };
 }
 
+export interface TrendingTopic {
+  keyword: string;
+  volume: number;
+  growth_rate: number;
+  sentiment_score: number;
+  related_posts: string[];
+  last_updated: Date;
+}
+
 export interface Survey {
   id: string;
   title: string;

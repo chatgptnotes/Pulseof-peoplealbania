@@ -18,8 +18,8 @@ export const recommendationsEngine = {
     ];
   },
 
-  updateContext() {
-    console.log('Recommendations context updated');
+  updateContext(context?: any) {
+    console.log('Recommendations context updated', context);
   },
 
   subscribe(callback: (recs: any) => void) {
