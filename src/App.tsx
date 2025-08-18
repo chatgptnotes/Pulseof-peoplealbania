@@ -13,6 +13,11 @@ import DataSubmission from './pages/DataSubmission'
 import DataTracking from './pages/DataTracking'
 import PoliticalPolling from './pages/PoliticalPolling'
 import PoliticalChoice from './pages/PoliticalChoice'
+import VoterDatabase from './pages/VoterDatabase'
+import FieldWorkers from './pages/FieldWorkers'
+import SocialMedia from './pages/SocialMedia'
+import CompetitorAnalysis from './pages/CompetitorAnalysis'
+import AIInsights from './pages/AIInsights'
 
 function App() {
   return (
@@ -32,6 +37,11 @@ function App() {
                 <Route path="/data-tracking" element={<DataTracking />} />
                 <Route path="/political-polling" element={<PoliticalPolling />} />
                 <Route path="/political-choice" element={<PoliticalChoice />} />
+                <Route path="/voter-database" element={<VoterDatabase />} />
+                <Route path="/field-workers" element={<FieldWorkers />} />
+                <Route path="/social-media" element={<SocialMedia />} />
+                <Route path="/competitor-analysis" element={<CompetitorAnalysis />} />
+                <Route path="/ai-insights" element={<AIInsights />} />
                 <Route path="/settings" element={<Settings />} />
               </Routes>
             </ErrorBoundary>

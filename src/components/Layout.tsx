@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { BarChart3, AlertCircle, FileText, Settings, Menu, X, Home, PieChart, LogOut, User, ToggleLeft, Vote } from 'lucide-react'
+import { BarChart3, AlertCircle, FileText, Settings, Menu, X, Home, PieChart, LogOut, User, ToggleLeft, Vote, Users, Briefcase, Share2, Target, Brain } from 'lucide-react'
 import RealTimeIndicator from './RealTimeIndicator'
 import LoginModal from './LoginModal'
 import { useAuth } from '../contexts/AuthContext'
@@ -19,8 +19,13 @@ export default function Layout({ children }: LayoutProps) {
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home, current: location.pathname === '/' || location.pathname === '/dashboard' },
     { name: 'Analytics', href: '/analytics', icon: PieChart, current: location.pathname === '/analytics' },
+    { name: 'Voter Database', href: '/voter-database', icon: Users, current: location.pathname === '/voter-database' },
     { name: 'Political Choice', href: '/political-choice', icon: ToggleLeft, current: location.pathname === '/political-choice' },
     { name: 'Political Polling', href: '/political-polling', icon: Vote, current: location.pathname === '/political-polling' },
+    { name: 'Social Media', href: '/social-media', icon: Share2, current: location.pathname === '/social-media' },
+    { name: 'Competitor Analysis', href: '/competitor-analysis', icon: Target, current: location.pathname === '/competitor-analysis' },
+    { name: 'Field Workers', href: '/field-workers', icon: Briefcase, current: location.pathname === '/field-workers' },
+    { name: 'AI Insights', href: '/ai-insights', icon: Brain, current: location.pathname === '/ai-insights' },
     { name: 'Reports', href: '/reports', icon: FileText, current: location.pathname === '/reports' },
     { name: 'Alerts', href: '/alerts', icon: AlertCircle, current: location.pathname === '/alerts' },
     ...(user?.permissions.includes('submit_data') || user?.role === 'admin' ? [
