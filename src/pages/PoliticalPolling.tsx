@@ -270,7 +270,7 @@ export default function PoliticalPolling() {
       </div>
 
       {/* CSS Styles for animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes bump {
           0% { transform: scale(1); }
           50% { transform: scale(1.5); }

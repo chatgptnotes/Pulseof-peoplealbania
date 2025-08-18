@@ -11,6 +11,8 @@ import Settings from './pages/Settings'
 import DataCaptureKit from './pages/DataCaptureKit'
 import DataSubmission from './pages/DataSubmission'
 import DataTracking from './pages/DataTracking'
+import PoliticalPolling from './pages/PoliticalPolling'
+import PoliticalChoice from './pages/PoliticalChoice'
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
                 <Route path="/data-kit" element={<DataCaptureKit />} />
                 <Route path="/submit-data" element={<DataSubmission />} />
                 <Route path="/data-tracking" element={<DataTracking />} />
+                <Route path="/political-polling" element={<PoliticalPolling />} />
+                <Route path="/political-choice" element={<PoliticalChoice />} />
                 <Route path="/settings" element={<Settings />} />
               </Routes>
             </ErrorBoundary>
