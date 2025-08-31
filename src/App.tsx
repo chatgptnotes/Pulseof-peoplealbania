@@ -39,7 +39,7 @@ import VoterDatabase from './components/VoterDatabase'
 import FieldWorkerManagement from './components/FieldWorkerManagement'
 import AIInsightsEngine from './components/AIInsightsEngine'
 import MagicSearchBar from './components/MagicSearchBar'
-import AdvancedChart from './components/AdvancedChart'
+import AdvancedCharts from './pages/AdvancedCharts'
 import SocialMediaMonitoring from './components/SocialMediaMonitoring'
 import ExportManager from './components/ExportManager'
 import FieldWorkerApp from './components/FieldWorkerApp'
@@ -245,7 +245,7 @@ function App() {
               } />
               <Route path="/advanced-charts" element={
                 <Layout>
-                  <AdvancedChart />
+                  <AdvancedCharts />
                 </Layout>
               } />
               <Route path="/social-monitoring" element={
