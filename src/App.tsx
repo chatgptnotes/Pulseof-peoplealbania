@@ -31,6 +31,10 @@ import FeedbackChatbot from './components/FeedbackChatbot'
 import MyConstituency from './components/MyConstituencyApp'
 import Subscription from './pages/Subscription'
 import AgenticPlatform from './components/AgenticPlatform'
+import DPDPCompliance from './components/DPDPCompliance'
+import PrivataIntegration from './components/PrivataIntegration'
+import WhatsAppBot from './components/WhatsAppBot'
+import PulseOfPeopleDashboard from './components/PulseOfPeopleDashboard'
 import { MobileContactBar } from './components/MobileResponsive'
 
 function App() {
@@ -185,6 +189,28 @@ function App() {
               <Route path="/conversation-bot" element={
                 <Layout>
                   <ConversationBot />
+                </Layout>
+              } />
+              
+              {/* Additional Feature Pages */}
+              <Route path="/dpdp-compliance" element={
+                <Layout>
+                  <DPDPCompliance />
+                </Layout>
+              } />
+              <Route path="/privata-integration" element={
+                <Layout>
+                  <PrivataIntegration />
+                </Layout>
+              } />
+              <Route path="/whatsapp-bot" element={
+                <Layout>
+                  <WhatsAppBot />
+                </Layout>
+              } />
+              <Route path="/pulse-dashboard" element={
+                <Layout>
+                  <PulseOfPeopleDashboard />
                 </Layout>
               } />
             </Routes>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { BarChart3, AlertCircle, FileText, Settings, Menu, X, Home, PieChart, LogOut, User, ToggleLeft, Vote, Users, Briefcase, Share2, Target, Brain, Newspaper, Tv, MessageCircle, Crown, Bot } from 'lucide-react'
+import { BarChart3, AlertCircle, FileText, Settings, Menu, X, Home, PieChart, LogOut, User, ToggleLeft, Vote, Users, Briefcase, Share2, Target, Brain, Newspaper, Tv, MessageCircle, Crown, Bot, Shield, Zap, Phone, Activity } from 'lucide-react'
 import RealTimeIndicator from './RealTimeIndicator'
 import LoginModal from './LoginModal'
 import { useAuth } from '../contexts/AuthContext'
@@ -31,6 +31,10 @@ export default function Layout({ children }: LayoutProps) {
     { name: 'Social Channels', href: '/social-media-channels', icon: MessageCircle, current: location.pathname === '/social-media-channels' },
     { name: 'Influencer Tracking', href: '/influencer-tracking', icon: Crown, current: location.pathname === '/influencer-tracking' },
     { name: 'Conversation Bot', href: '/conversation-bot', icon: Bot, current: location.pathname === '/conversation-bot' },
+    { name: 'DPDP Compliance', href: '/dpdp-compliance', icon: Shield, current: location.pathname === '/dpdp-compliance' },
+    { name: 'Privata Integration', href: '/privata-integration', icon: Zap, current: location.pathname === '/privata-integration' },
+    { name: 'WhatsApp Bot', href: '/whatsapp-bot', icon: Phone, current: location.pathname === '/whatsapp-bot' },
+    { name: 'Pulse Dashboard', href: '/pulse-dashboard', icon: Activity, current: location.pathname === '/pulse-dashboard' },
     { name: 'Reports', href: '/reports', icon: FileText, current: location.pathname === '/reports' },
     { name: 'Alerts', href: '/alerts', icon: AlertCircle, current: location.pathname === '/alerts' },
     ...(user?.permissions.includes('submit_data') || user?.role === 'admin' ? [
