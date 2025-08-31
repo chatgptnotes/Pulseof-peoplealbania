@@ -1,5 +1,5 @@
 import React from 'react';
-import IndiaMap from '../components/IndiaMap';
+import { MapPin, TrendingUp, TrendingDown } from 'lucide-react';
 
 export default function RegionalMap() {
   // Sample data for states with sentiment scores
@@ -55,8 +55,68 @@ export default function RegionalMap() {
         </p>
       </div>
 
-      {/* Interactive Map */}
-      <IndiaMap data={stateData} height={600} />
+      {/* Interactive Map Placeholder */}
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+            <MapPin className="w-5 h-5 mr-2" />
+            Regional Sentiment Map
+          </h3>
+          <div className="flex items-center space-x-4 text-xs">
+            <div className="flex items-center">
+              <div className="w-3 h-3 bg-green-500 rounded mr-1"></div>
+              <span>Positive (70%+)</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 bg-yellow-500 rounded mr-1"></div>
+              <span>Neutral (50-70%)</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 bg-orange-500 rounded mr-1"></div>
+              <span>Negative (30-50%)</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 bg-red-500 rounded mr-1"></div>
+              <span>Very Negative (&lt;30%)</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Map Placeholder */}
+        <div className="border border-gray-100 rounded bg-gray-50 flex items-center justify-center" style={{ height: '600px' }}>
+          <div className="text-center">
+            <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h4 className="text-xl font-semibold text-gray-600 mb-2">Interactive India Map</h4>
+            <p className="text-gray-500 max-w-md mx-auto">
+              Geographic visualization showing state-wise sentiment analysis across India. 
+              AmCharts integration required for full interactive map functionality.
+            </p>
+            <div className="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 max-w-4xl mx-auto">
+              {stateData.slice(0, 12).map((state) => (
+                <div
+                  key={state.id}
+                  className={`p-2 rounded text-xs text-center border ${
+                    state.sentiment >= 0.7 ? 'bg-green-100 border-green-300 text-green-800' :
+                    state.sentiment >= 0.5 ? 'bg-yellow-100 border-yellow-300 text-yellow-800' :
+                    state.sentiment >= 0.3 ? 'bg-orange-100 border-orange-300 text-orange-800' :
+                    'bg-red-100 border-red-300 text-red-800'
+                  }`}
+                >
+                  <div className="font-medium">{state.title}</div>
+                  <div className="text-xs">{Math.round(state.sentiment * 100)}%</div>
+                </div>
+              ))}
+              <div className="p-2 text-center text-gray-400 text-xs">
+                +{stateData.length - 12} more states...
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <p className="text-xs text-gray-500 mt-2">
+          Interactive map functionality requires AmCharts library. State data is displayed above as cards.
+        </p>
+      </div>
 
       {/* State Analysis */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
