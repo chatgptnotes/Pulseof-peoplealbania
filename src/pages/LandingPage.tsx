@@ -124,15 +124,15 @@ export default function LandingPage() {
             
             {/* Hero Title */}
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-              Win Elections with
-              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent block mt-2">
-                Data-Driven Intelligence
+              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent block mb-2">
+                Pulse of People
               </span>
+              Win Elections with Data-Driven Intelligence
             </h1>
             
             {/* Hero Subtitle */}
             <p className="text-xl lg:text-2xl text-gray-200 max-w-4xl mx-auto mb-10 leading-relaxed">
-              BETTROI combines real-time voter sentiment analysis, AI-powered campaign insights, 
+              Pulse of People by BETTROI combines real-time voter sentiment analysis, AI-powered campaign insights, 
               and comprehensive political intelligence to help you make informed decisions and win elections.
             </p>
             
@@ -331,16 +331,21 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center mb-4">
-                <BarChart3 className="w-8 h-8 text-blue-400 mr-3" />
-                <span className="text-2xl font-bold">BETTROI</span>
+                <div className="flex items-center space-x-3">
+                  <Zap className="w-8 h-8 text-purple-400" />
+                  <div>
+                    <div className="text-2xl font-bold">Pulse of People</div>
+                    <div className="text-sm text-gray-400">by BETTROI</div>
+                  </div>
+                </div>
               </div>
               <p className="text-gray-400 mb-4">
-                The world's most advanced political intelligence platform, 
-                empowering campaigns with data-driven insights.
+                The world's most ADVANCED political intelligence platform, 
+                empowering campaigns with data-driven insights and real-time pulse monitoring.
               </p>
               <div className="flex items-center text-gray-400">
                 <MapPin className="w-4 h-4 mr-2" />
-                Global Headquarters • Available Worldwide
+                Animal-i Initiative • Global Headquarters: Dubai
               </div>
             </div>
             <div>
