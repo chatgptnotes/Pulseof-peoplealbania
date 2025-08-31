@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { BarChart3, AlertCircle, FileText, Settings, Menu, X, Home, PieChart, LogOut, User, ToggleLeft, Vote, Users, Briefcase, Share2, Target, Brain, Newspaper, Tv, MessageCircle, Crown, Bot, Shield, Zap, Phone, Activity, Database, UserCheck, Lightbulb, Search, TrendingUp, Eye, Download, Smartphone } from 'lucide-react'
+import { BarChart3, AlertCircle, FileText, Settings, Menu, X, Home, PieChart, LogOut, User, ToggleLeft, Vote, Users, Briefcase, Share2, Target, Brain, Newspaper, Tv, MessageCircle, Crown, Bot, Shield, Zap, Phone, Activity, Database, UserCheck, Lightbulb, Search, TrendingUp, Eye, Download, Smartphone, MapPin } from 'lucide-react'
 import RealTimeIndicator from './RealTimeIndicator'
 import LoginModal from './LoginModal'
 import { useAuth } from '../contexts/AuthContext'
