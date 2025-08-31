@@ -9,6 +9,7 @@ import AlertsPanel from '../components/AlertsPanel'
 import IndiaMap from '../components/IndiaMap'
 import ExportManager from '../components/ExportManager'
 import AdvancedChart from '../components/AdvancedChart'
+import { MobileNavigation, ResponsiveContainer, MobileCard, ResponsiveGrid, MobileButton, MobileStats } from '../components/MobileResponsive'
 import { TrendingUp, Users, AlertTriangle, Target, Calendar, Brain, Zap, Globe, Lightbulb } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { realTimeService } from '../services/realTimeService'
@@ -162,226 +163,223 @@ export default function Dashboard() {
   ]
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Voter Sentiment Dashboard</h1>
-          <p className="text-gray-600">Real-time political intelligence and sentiment analysis</p>
-        </div>
-        <div className="flex space-x-3">
-          <ExportManager className="inline-block" />
-          <button 
-            onClick={() => setShowAdvancedFeatures(!showAdvancedFeatures)}
-            className={`px-4 py-2 ${showAdvancedFeatures ? 'bg-purple-600 text-white' : 'border border-gray-300 text-gray-700'} rounded-lg hover:bg-purple-700 active:bg-purple-800 active:scale-95 transition-all duration-200 shadow-sm hover:shadow-md`}
-          >
-            <Brain className="w-4 h-4 inline mr-2" />
-            AI Features
-          </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        {kpis.map((kpi, index) => {
-          // Use live metrics if available
-          const liveValue = liveMetrics && index === 0 ? `${liveMetrics.overallSentiment}%` :
-                          liveMetrics && index === 1 ? liveMetrics.activeConversations?.toLocaleString() :
-                          liveMetrics && index === 2 ? liveMetrics.criticalAlerts?.toString() :
-                          kpi.value;
-          
-          return (
-            <div key={index} className="metric-card relative">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">{kpi.label}</p>
-                  <p className="text-2xl font-bold text-gray-900">{liveValue}</p>
-                  <p className={`text-sm ${kpi.color}`}>{kpi.change}</p>
-                </div>
-                <kpi.icon className={`w-8 h-8 ${kpi.color}`} />
+    <>
+      <MobileNavigation />
+      <ResponsiveContainer>
+        <div className="space-responsive pt-16 lg:pt-0">
+          <div className="mobile-header lg:mb-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+              <div>
+                <h1 className="text-responsive-xl font-bold text-gray-900">Pulse of People Dashboard</h1>
+                <p className="text-responsive-sm text-gray-600">Real-time political intelligence and sentiment analysis</p>
               </div>
-              {liveMetrics && index === 0 && (
-                <div className="absolute top-2 right-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" title="Live data"></div>
-                </div>
-              )}
+              <div className="flex space-x-2 lg:space-x-3">
+                <ExportManager className="inline-block" />
+                <MobileButton
+                  onClick={() => setShowAdvancedFeatures(!showAdvancedFeatures)}
+                  variant={showAdvancedFeatures ? 'primary' : 'outline'}
+                  size="default"
+                >
+                  <Brain className="w-4 h-4 inline mr-2" />
+                  AI Features
+                </MobileButton>
+              </div>
             </div>
-          );
-        })}
-      </div>
+          </div>
 
-      {/* AI-Powered Features Section */}
-      {showAdvancedFeatures && (
-        <div className="space-y-6 border-2 border-purple-200 rounded-lg p-6 bg-purple-50">
+          <MobileStats stats={kpis.map((kpi, index) => {
+            const liveValue = liveMetrics && index === 0 ? `${liveMetrics.overallSentiment}%` :
+                            liveMetrics && index === 1 ? liveMetrics.activeConversations?.toLocaleString() :
+                            liveMetrics && index === 2 ? liveMetrics.criticalAlerts?.toString() :
+                            kpi.value;
+            
+            return {
+              label: kpi.label,
+              value: liveValue,
+              icon: kpi.icon,
+              color: kpi.color.includes('green') ? 'bg-green-100' :
+                     kpi.color.includes('blue') ? 'bg-blue-100' :
+                     kpi.color.includes('red') ? 'bg-red-100' :
+                     kpi.color.includes('purple') ? 'bg-purple-100' :
+                     'bg-gray-100',
+              trend: { direction: kpi.change.includes('+') ? 'up' : 'down', value: kpi.change }
+            };
+          })} />
+
+          {/* AI-Powered Features Section */}
+          {showAdvancedFeatures && (
+            <MobileCard className="border-2 border-purple-200 bg-purple-50" padding="default">
+              <div className="space-responsive">
           <div className="flex items-center space-x-2 mb-4">
             <Brain className="w-6 h-6 text-purple-600" />
             <h2 className="text-xl font-bold text-purple-900">AI-Powered Intelligence</h2>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {/* Crisis Alerts */}
-            {activeAlerts.length > 0 && (
-              <div className="bg-white rounded-lg shadow-sm border border-red-200 p-4">
-                <div className="flex items-center space-x-2 mb-3">
-                  <AlertTriangle className="w-5 h-5 text-red-600" />
-                  <h3 className="font-semibold text-red-900">Crisis Detection</h3>
-                </div>
-                <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {activeAlerts.slice(0, 3).map((alert, index) => (
-                    <div key={index} className={`p-2 rounded text-xs ${
-                      alert.severity === 'critical' ? 'bg-red-100 text-red-800' :
-                      alert.severity === 'high' ? 'bg-orange-100 text-orange-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      <div className="font-medium">{alert.title}</div>
-                      <div className="text-xs opacity-75">{alert.description}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            {/* AI Recommendations */}
-            {recommendations.length > 0 && (
-              <div className="bg-white rounded-lg shadow-sm border border-blue-200 p-4">
-                <div className="flex items-center space-x-2 mb-3">
-                  <Lightbulb className="w-5 h-5 text-blue-600" />
-                  <h3 className="font-semibold text-blue-900">AI Recommendations</h3>
-                </div>
-                <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {recommendations.slice(0, 3).map((rec, index) => (
-                    <div key={index} className={`p-2 rounded text-xs ${
-                      rec.priority === 'urgent' ? 'bg-red-100 text-red-800' :
-                      rec.priority === 'high' ? 'bg-orange-100 text-orange-800' :
-                      'bg-blue-100 text-blue-800'
-                    }`}>
-                      <div className="font-medium">{rec.title}</div>
-                      <div className="text-xs opacity-75">{rec.description}</div>
-                      <div className="text-xs mt-1 font-medium">Impact: {rec.estimated_impact} | Confidence: {Math.round(rec.confidence_score * 100)}%</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            {/* Trending Topics */}
-            {trendingTopics.length > 0 && (
-              <div className="bg-white rounded-lg shadow-sm border border-green-200 p-4">
-                <div className="flex items-center space-x-2 mb-3">
-                  <Zap className="w-5 h-5 text-green-600" />
-                  <h3 className="font-semibold text-green-900">Trending Topics</h3>
-                </div>
-                <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {trendingTopics.slice(0, 5).map((topic, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 bg-green-50 rounded text-xs">
-                      <div>
-                        <div className="font-medium text-green-800">{topic.keyword}</div>
-                        <div className="text-green-600">Volume: {topic.volume} | Growth: +{Math.round(topic.growth_rate * 100)}%</div>
+                <ResponsiveGrid cols={{ sm: 1, lg: 2, xl: 3 }}>
+                  {/* Crisis Alerts */}
+                  {activeAlerts.length > 0 && (
+                    <MobileCard className="border-red-200" padding="default">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <AlertTriangle className="w-5 h-5 text-red-600" />
+                        <h3 className="text-responsive-sm font-semibold text-red-900">Crisis Detection</h3>
                       </div>
-                      <div className={`px-2 py-1 rounded text-xs ${
-                        topic.sentiment_score > 0.1 ? 'bg-green-200 text-green-800' :
-                        topic.sentiment_score < -0.1 ? 'bg-red-200 text-red-800' :
-                        'bg-gray-200 text-gray-800'
-                      }`}>
-                        {topic.sentiment_score > 0.1 ? '😊' : topic.sentiment_score < -0.1 ? '😟' : '😐'}
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {activeAlerts.slice(0, 3).map((alert, index) => (
+                          <div key={index} className={`p-2 rounded text-responsive-xs ${
+                            alert.severity === 'critical' ? 'bg-red-100 text-red-800' :
+                            alert.severity === 'high' ? 'bg-orange-100 text-orange-800' :
+                            'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            <div className="font-medium">{alert.title}</div>
+                            <div className="text-xs opacity-75">{alert.description}</div>
+                          </div>
+                        ))}
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+                    </MobileCard>
+                  )}
+            
+                  {/* AI Recommendations */}
+                  {recommendations.length > 0 && (
+                    <MobileCard className="border-blue-200" padding="default">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <Lightbulb className="w-5 h-5 text-blue-600" />
+                        <h3 className="text-responsive-sm font-semibold text-blue-900">AI Recommendations</h3>
+                      </div>
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {recommendations.slice(0, 3).map((rec, index) => (
+                          <div key={index} className={`p-2 rounded text-responsive-xs ${
+                            rec.priority === 'urgent' ? 'bg-red-100 text-red-800' :
+                            rec.priority === 'high' ? 'bg-orange-100 text-orange-800' :
+                            'bg-blue-100 text-blue-800'
+                          }`}>
+                            <div className="font-medium">{rec.title}</div>
+                            <div className="text-xs opacity-75">{rec.description}</div>
+                            <div className="text-xs mt-1 font-medium">Impact: {rec.estimated_impact} | Confidence: {Math.round(rec.confidence_score * 100)}%</div>
+                          </div>
+                        ))}
+                      </div>
+                    </MobileCard>
+                  )}
+            
+                  {/* Trending Topics */}
+                  {trendingTopics.length > 0 && (
+                    <MobileCard className="border-green-200" padding="default">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <Zap className="w-5 h-5 text-green-600" />
+                        <h3 className="text-responsive-sm font-semibold text-green-900">Trending Topics</h3>
+                      </div>
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {trendingTopics.slice(0, 5).map((topic, index) => (
+                          <div key={index} className="flex items-center justify-between p-2 bg-green-50 rounded text-responsive-xs">
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium text-green-800 truncate">{topic.keyword}</div>
+                              <div className="text-green-600 truncate">Volume: {topic.volume} | Growth: +{Math.round(topic.growth_rate * 100)}%</div>
+                            </div>
+                            <div className={`px-2 py-1 rounded text-xs flex-shrink-0 ${
+                              topic.sentiment_score > 0.1 ? 'bg-green-200 text-green-800' :
+                              topic.sentiment_score < -0.1 ? 'bg-red-200 text-red-800' :
+                              'bg-gray-200 text-gray-800'
+                            }`}>
+                              {topic.sentiment_score > 0.1 ? '😊' : topic.sentiment_score < -0.1 ? '😟' : '😐'}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </MobileCard>
+                  )}
+                </ResponsiveGrid>
           
-          {/* Advanced Visualizations */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {liveMetrics?.trendingTopics && (
-              <AdvancedChart
-                type="doughnut"
-                title="Platform Distribution"
-                subtitle="Posts by social media platform"
-                data={{
-                  labels: ['Twitter', 'Facebook', 'Instagram', 'YouTube', 'News'],
-                  datasets: [{
-                    label: 'Posts',
-                    data: [
-                      liveMetrics.engagement?.twitter || 0,
-                      liveMetrics.engagement?.facebook || 0,
-                      liveMetrics.engagement?.instagram || 0,
-                      liveMetrics.engagement?.youtube || 0,
-                      liveMetrics.engagement?.news || 0
-                    ],
-                    backgroundColor: [
-                      '#1DA1F2',
-                      '#4267B2', 
-                      '#E4405F',
-                      '#FF0000',
-                      '#6B7280'
-                    ]
-                  }]
-                }}
-                height={250}
-                showExport={true}
-              />
-            )}
-            
-            {recentPosts.length > 0 && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                <div className="flex items-center space-x-2 mb-3">
-                  <Globe className="w-5 h-5 text-gray-600" />
-                  <h3 className="font-semibold text-gray-900">Recent Social Media Activity</h3>
-                </div>
-                <div className="space-y-2 max-h-64 overflow-y-auto">
-                  {recentPosts.slice(0, 5).map((post, index) => (
-                    <div key={index} className="p-2 bg-gray-50 rounded text-xs">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-medium text-gray-800">{post.source?.platform || 'Social Media'}</span>
-                        <span className={`px-1 py-0.5 rounded text-xs ${
-                          post.sentiment?.polarity === 'positive' ? 'bg-green-200 text-green-800' :
-                          post.sentiment?.polarity === 'negative' ? 'bg-red-200 text-red-800' :
-                          'bg-gray-200 text-gray-800'
-                        }`}>
-                          {post.sentiment?.polarity || 'neutral'}
-                        </span>
+                {/* Advanced Visualizations */}
+                <ResponsiveGrid cols={{ sm: 1, lg: 2 }}>
+                  {liveMetrics?.trendingTopics && (
+                    <AdvancedChart
+                      type="doughnut"
+                      title="Platform Distribution"
+                      subtitle="Posts by social media platform"
+                      data={{
+                        labels: ['Twitter', 'Facebook', 'Instagram', 'YouTube', 'News'],
+                        datasets: [{
+                          label: 'Posts',
+                          data: [
+                            liveMetrics.engagement?.twitter || 0,
+                            liveMetrics.engagement?.facebook || 0,
+                            liveMetrics.engagement?.instagram || 0,
+                            liveMetrics.engagement?.youtube || 0,
+                            liveMetrics.engagement?.news || 0
+                          ],
+                          backgroundColor: [
+                            '#1DA1F2',
+                            '#4267B2', 
+                            '#E4405F',
+                            '#FF0000',
+                            '#6B7280'
+                          ]
+                        }]
+                      }}
+                      height={250}
+                      showExport={true}
+                    />
+                  )}
+                  
+                  {recentPosts.length > 0 && (
+                    <MobileCard padding="default">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <Globe className="w-5 h-5 text-gray-600" />
+                        <h3 className="text-responsive-sm font-semibold text-gray-900">Recent Social Media Activity</h3>
                       </div>
-                      <div className="text-gray-600 truncate">
-                        {post.content?.substring(0, 100) || 'Sample social media content'}...
+                      <div className="space-y-2 max-h-64 overflow-y-auto">
+                        {recentPosts.slice(0, 5).map((post, index) => (
+                          <div key={index} className="p-2 bg-gray-50 rounded text-responsive-xs">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="font-medium text-gray-800 truncate flex-1">{post.source?.platform || 'Social Media'}</span>
+                              <span className={`px-1 py-0.5 rounded text-xs flex-shrink-0 ${
+                                post.sentiment?.polarity === 'positive' ? 'bg-green-200 text-green-800' :
+                                post.sentiment?.polarity === 'negative' ? 'bg-red-200 text-red-800' :
+                                'bg-gray-200 text-gray-800'
+                              }`}>
+                                {post.sentiment?.polarity || 'neutral'}
+                              </span>
+                            </div>
+                            <div className="text-gray-600 truncate">
+                              {post.content?.substring(0, 100) || 'Sample social media content'}...
+                            </div>
+                            <div className="text-gray-500 mt-1 text-xs">
+                              {post.engagement_metrics ? 
+                                `👍 ${post.engagement_metrics.likes} 🔄 ${post.engagement_metrics.shares} 💬 ${post.engagement_metrics.comments}` :
+                                'Engagement metrics'
+                              }
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <div className="text-gray-500 mt-1">
-                        {post.engagement_metrics ? 
-                          `👍 ${post.engagement_metrics.likes} 🔄 ${post.engagement_metrics.shares} 💬 ${post.engagement_metrics.comments}` :
-                          'Engagement metrics'
-                        }
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    </MobileCard>
+                  )}
+                </ResponsiveGrid>
               </div>
-            )}
+            </MobileCard>
+          )}
+          
+          <div className="w-full">
+            <IndiaMap data={indiaMapData} height={400} />
           </div>
-        </div>
-      )}
-      
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <div className="xl:col-span-2">
-          <IndiaMap data={indiaMapData} height={400} />
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        <SentimentByIssue />
-        <SentimentTrends />
-        <SentimentDistribution />
-        <IssueImportance />
-        <CompetitorComparison />
-        <SentimentHeatmap />
-      </div>
+          <ResponsiveGrid cols={{ sm: 1, lg: 2, xl: 3 }}>
+            <SentimentByIssue />
+            <SentimentTrends />
+            <SentimentDistribution />
+            <IssueImportance />
+            <CompetitorComparison />
+            <SentimentHeatmap />
+          </ResponsiveGrid>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <InfluencerTracking />
-        <AlertsPanel />
-      </div>
+          <ResponsiveGrid cols={{ sm: 1, lg: 2 }}>
+            <InfluencerTracking />
+            <AlertsPanel />
+          </ResponsiveGrid>
       
-      {/* Enhanced Analytics Section */}
-      {showAdvancedFeatures && liveMetrics && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Enhanced Analytics Section */}
+          {showAdvancedFeatures && liveMetrics && (
+            <ResponsiveGrid cols={{ sm: 1, lg: 2 }}>
           <AdvancedChart
             type="line"
             title="Real-time Sentiment Trends"
@@ -426,8 +424,10 @@ export default function Dashboard() {
             height={300}
             showExport={true}
           />
+            </ResponsiveGrid>
+          )}
         </div>
-      )}
-    </div>
+      </ResponsiveContainer>
+    </>
   )
 }

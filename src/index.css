@@ -10,15 +10,116 @@
 
 @layer components {
   .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6;
   }
   
   .chart-container {
-    @apply w-full h-64;
+    @apply w-full h-48 sm:h-64;
   }
   
   .metric-card {
-    @apply bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200;
+    @apply bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 sm:p-4 border border-blue-200;
+  }
+
+  /* Mobile-optimized components */
+  .mobile-card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4 mb-4;
+  }
+
+  .mobile-button {
+    @apply w-full sm:w-auto px-4 py-3 sm:py-2 text-base sm:text-sm font-medium rounded-lg transition-all duration-200;
+  }
+
+  .mobile-input {
+    @apply w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-base sm:text-sm;
+  }
+
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-50 sm:relative sm:border-t-0 sm:bg-transparent sm:p-0;
+  }
+
+  .mobile-header {
+    @apply sticky top-0 z-40 bg-white border-b border-gray-200 px-4 py-3 sm:px-6;
+  }
+
+  .mobile-modal {
+    @apply fixed inset-0 z-50 overflow-y-auto bg-white sm:bg-black sm:bg-opacity-50 sm:flex sm:items-center sm:justify-center;
+  }
+
+  .mobile-modal-content {
+    @apply w-full h-full sm:w-auto sm:h-auto sm:max-w-lg sm:mx-4 bg-white sm:rounded-lg p-4 sm:p-6;
+  }
+
+  .mobile-tabs {
+    @apply flex overflow-x-auto scrollbar-hide border-b border-gray-200 bg-white sticky top-0 z-30;
+  }
+
+  .mobile-tab {
+    @apply px-4 py-3 sm:px-6 sm:py-4 border-b-2 font-medium text-sm whitespace-nowrap min-w-max;
+  }
+
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+  }
+
+  .mobile-stats-grid {
+    @apply grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4;
+  }
+
+  /* Hide scrollbar for mobile */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Touch-friendly sizing */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Responsive text scaling */
+  .text-responsive-xs {
+    @apply text-xs sm:text-sm;
+  }
+  .text-responsive-sm {
+    @apply text-sm sm:text-base;
+  }
+  .text-responsive-base {
+    @apply text-base sm:text-lg;
+  }
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl;
+  }
+  .text-responsive-xl {
+    @apply text-xl sm:text-2xl;
+  }
+  .text-responsive-2xl {
+    @apply text-2xl sm:text-3xl;
+  }
+
+  /* Responsive spacing */
+  .space-responsive {
+    @apply space-y-4 sm:space-y-6;
+  }
+  .space-responsive-x {
+    @apply space-x-3 sm:space-x-4;
+  }
+
+  /* Mobile-first responsive containers */
+  .container-mobile {
+    @apply px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto;
+  }
+
+  /* Gradient backgrounds for mobile */
+  .gradient-mobile {
+    @apply bg-gradient-to-r from-purple-600 to-blue-600;
+  }
+
+  .gradient-mobile-light {
+    @apply bg-gradient-to-r from-purple-50 to-blue-50;
   }
 
   .bg-grid-pattern {

@@ -20,6 +20,13 @@ import SocialMedia from './pages/SocialMedia'
 import CompetitorAnalysis from './pages/CompetitorAnalysis'
 import AIInsights from './pages/AIInsights'
 import LandingPage from './pages/LandingPage'
+import EnhancedWardHeatmap from './components/EnhancedWardHeatmap'
+import ManifestoMatch from './components/ManifestoMatch'
+import FeedbackChatbot from './components/FeedbackChatbot'
+import MyConstituency from './components/MyConstituency'
+import Subscription from './pages/Subscription'
+import AgenticPlatform from './components/AgenticPlatform'
+import { MobileContactBar } from './components/MobileResponsive'
 
 function App() {
   return (
@@ -111,7 +118,45 @@ function App() {
                   <Settings />
                 </Layout>
               } />
+              
+              {/* New Feature Pages */}
+              <Route path="/heatmap" element={
+                <Layout>
+                  <EnhancedWardHeatmap />
+                </Layout>
+              } />
+              <Route path="/manifesto" element={
+                <Layout>
+                  <ManifestoMatch />
+                </Layout>
+              } />
+              <Route path="/feedback" element={
+                <Layout>
+                  <FeedbackChatbot />
+                </Layout>
+              } />
+              <Route path="/constituency" element={
+                <Layout>
+                  <MyConstituency />
+                </Layout>
+              } />
+              <Route path="/subscription" element={
+                <Layout>
+                  <Subscription />
+                </Layout>
+              } />
+              <Route path="/pulse" element={
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              } />
+              <Route path="/agents" element={
+                <Layout>
+                  <AgenticPlatform />
+                </Layout>
+              } />
             </Routes>
+            <MobileContactBar />
           </ErrorBoundary>
         </RealTimeProvider>
       </AuthProvider>

@@ -18,10 +18,17 @@ import {
   Award,
   MapPin,
   Clock,
-  Briefcase
+  Briefcase,
+  Phone,
+  Mail,
+  MessageCircle
 } from 'lucide-react';
 
 export default function LandingPage() {
+  const handleDemoClick = () => {
+    // Open demo video in new tab or modal
+    window.open('https://youtu.be/demo-video-id', '_blank');
+  };
   const features = [
     {
       icon: BarChart3,
@@ -145,7 +152,10 @@ export default function LandingPage() {
                 Launch Dashboard
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <button className="group px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-300 flex items-center">
+              <button 
+                onClick={handleDemoClick}
+                className="group px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-300 flex items-center transform hover:scale-105"
+              >
                 <Play className="mr-2 w-5 h-5" />
                 Watch Demo
               </button>
@@ -358,13 +368,47 @@ export default function LandingPage() {
               </ul>
             </div>
             <div>
-              <h3 className="font-bold mb-4">Support</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact Sales</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">System Status</a></li>
-              </ul>
+              <h3 className="font-bold mb-4">Contact Sales</h3>
+              <div className="space-y-3 text-gray-400">
+                <div className="flex items-center">
+                  <MapPin className="w-4 h-4 mr-2 text-purple-400" />
+                  <span className="text-sm">Dubai, UAE (HQ)</span>
+                </div>
+                <div className="flex items-center">
+                  <Phone className="w-4 h-4 mr-2 text-blue-400" />
+                  <a href="tel:+971547148580" className="text-sm hover:text-white transition-colors">
+                    +971 54 714 8580
+                  </a>
+                </div>
+                <div className="flex items-center">
+                  <Phone className="w-4 h-4 mr-2 text-green-400" />
+                  <a href="tel:+919373111709" className="text-sm hover:text-white transition-colors">
+                    +91 9373111709 (India)
+                  </a>
+                </div>
+                <div className="flex items-center">
+                  <Phone className="w-4 h-4 mr-2 text-orange-400" />
+                  <a href="tel:+971521700972" className="text-sm hover:text-white transition-colors">
+                    +971 52 170 0972
+                  </a>
+                </div>
+                <div className="flex items-center">
+                  <Mail className="w-4 h-4 mr-2 text-cyan-400" />
+                  <a href="mailto:contact@pulseofpeople.com" className="text-sm hover:text-white transition-colors">
+                    contact@pulseofpeople.com
+                  </a>
+                </div>
+                <div className="flex items-center">
+                  <MessageCircle className="w-4 h-4 mr-2 text-yellow-400" />
+                  <a href="https://wa.me/971547148580" className="text-sm hover:text-white transition-colors">
+                    WhatsApp Sales
+                  </a>
+                </div>
+                <div className="mt-4 pt-3 border-t border-gray-700">
+                  <p className="text-xs font-medium">24/7 Sales Support</p>
+                  <p className="text-xs">Kerala Project Office Available</p>
+                </div>
+              </div>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
