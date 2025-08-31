@@ -35,6 +35,14 @@ import DPDPCompliance from './components/DPDPCompliance'
 import PrivataIntegration from './components/PrivataIntegration'
 import WhatsAppBot from './components/WhatsAppBot'
 import PulseOfPeopleDashboard from './components/PulseOfPeopleDashboard'
+import VoterDatabase from './components/VoterDatabase'
+import FieldWorkerManagement from './components/FieldWorkerManagement'
+import AIInsightsEngine from './components/AIInsightsEngine'
+import MagicSearchBar from './components/MagicSearchBar'
+import AdvancedChart from './components/AdvancedChart'
+import SocialMediaMonitoring from './components/SocialMediaMonitoring'
+import ExportManager from './components/ExportManager'
+import FieldWorkerApp from './components/FieldWorkerApp'
 import { MobileContactBar } from './components/MobileResponsive'
 
 function App() {
@@ -211,6 +219,48 @@ function App() {
               <Route path="/pulse-dashboard" element={
                 <Layout>
                   <PulseOfPeopleDashboard />
+                </Layout>
+              } />
+              
+              {/* Advanced Component Pages */}
+              <Route path="/advanced-voter-database" element={
+                <Layout>
+                  <VoterDatabase />
+                </Layout>
+              } />
+              <Route path="/field-worker-management" element={
+                <Layout>
+                  <FieldWorkerManagement />
+                </Layout>
+              } />
+              <Route path="/ai-insights-engine" element={
+                <Layout>
+                  <AIInsightsEngine />
+                </Layout>
+              } />
+              <Route path="/magic-search" element={
+                <Layout>
+                  <MagicSearchBar />
+                </Layout>
+              } />
+              <Route path="/advanced-charts" element={
+                <Layout>
+                  <AdvancedChart />
+                </Layout>
+              } />
+              <Route path="/social-monitoring" element={
+                <Layout>
+                  <SocialMediaMonitoring />
+                </Layout>
+              } />
+              <Route path="/export-manager" element={
+                <Layout>
+                  <ExportManager />
+                </Layout>
+              } />
+              <Route path="/field-worker-app" element={
+                <Layout>
+                  <FieldWorkerApp />
                 </Layout>
               } />
             </Routes>
