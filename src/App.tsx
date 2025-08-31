@@ -43,6 +43,8 @@ import AdvancedCharts from './pages/AdvancedCharts'
 import SocialMediaMonitoring from './components/SocialMediaMonitoring'
 import ExportManager from './components/ExportManager'
 import FieldWorkerApp from './components/FieldWorkerApp'
+import CompetitorTracking from './components/CompetitorTracking'
+import RegionalMap from './pages/RegionalMap'
 import { MobileContactBar } from './components/MobileResponsive'
 
 function App() {
@@ -261,6 +263,16 @@ function App() {
               <Route path="/field-worker-app" element={
                 <Layout>
                   <FieldWorkerApp />
+                </Layout>
+              } />
+              <Route path="/competitor-tracking" element={
+                <Layout>
+                  <CompetitorTracking />
+                </Layout>
+              } />
+              <Route path="/regional-map" element={
+                <Layout>
+                  <RegionalMap />
                 </Layout>
               } />
             </Routes>
