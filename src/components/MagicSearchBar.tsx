@@ -20,7 +20,8 @@ import {
   Globe,
   Phone,
   FileText,
-  Calendar
+  Calendar,
+  Tag
 } from 'lucide-react';
 
 interface SearchResult {
@@ -349,7 +350,7 @@ export default function MagicSearchBar() {
 
         {/* Filter Tabs */}
         {isOpen && (
-          <div className="absolute top-full mt-2 left-0 right-0 bg-white rounded-lg shadow-lg border border-gray-200 p-2">
+          <div className="absolute top-full mt-2 left-0 right-0 bg-white rounded-lg shadow-lg border border-gray-200 p-2 z-50">
             <div className="flex flex-wrap gap-2">
               {[
                 { key: 'all', label: 'All Data', icon: Globe },
@@ -380,9 +381,9 @@ export default function MagicSearchBar() {
 
       {/* Search Results Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-20 z-40" onClick={() => setIsOpen(false)}>
+        <div className="fixed inset-0 bg-black bg-opacity-20 z-30" onClick={() => setIsOpen(false)}>
           <div 
-            className="absolute top-20 left-4 right-4 max-w-4xl mx-auto bg-white rounded-xl shadow-2xl border border-gray-200 max-h-96 overflow-hidden"
+            className="absolute top-32 left-4 right-4 max-w-4xl mx-auto bg-white rounded-xl shadow-2xl border border-gray-200 max-h-96 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
             ref={resultsRef}
           >
