@@ -20,6 +20,11 @@ import SocialMedia from './pages/SocialMedia'
 import CompetitorAnalysis from './pages/CompetitorAnalysis'
 import AIInsights from './pages/AIInsights'
 import LandingPage from './pages/LandingPage'
+import PressMediaMonitoring from './pages/PressMediaMonitoring'
+import TVBroadcastAnalysis from './pages/TVBroadcastAnalysis'
+import SocialMediaChannels from './pages/SocialMediaChannels'
+import InfluencerTracking from './pages/InfluencerTracking'
+import ConversationBot from './pages/ConversationBot'
 import EnhancedWardHeatmap from './components/EnhancedWardHeatmap'
 import ManifestoMatch from './components/ManifestoMatch'
 import FeedbackChatbot from './components/FeedbackChatbot'
@@ -153,6 +158,33 @@ function App() {
               <Route path="/agents" element={
                 <Layout>
                   <AgenticPlatform />
+                </Layout>
+              } />
+              
+              {/* Data Collection Pages */}
+              <Route path="/press-media-monitoring" element={
+                <Layout>
+                  <PressMediaMonitoring />
+                </Layout>
+              } />
+              <Route path="/tv-broadcast-analysis" element={
+                <Layout>
+                  <TVBroadcastAnalysis />
+                </Layout>
+              } />
+              <Route path="/social-media-channels" element={
+                <Layout>
+                  <SocialMediaChannels />
+                </Layout>
+              } />
+              <Route path="/influencer-tracking" element={
+                <Layout>
+                  <InfluencerTracking />
+                </Layout>
+              } />
+              <Route path="/conversation-bot" element={
+                <Layout>
+                  <ConversationBot />
                 </Layout>
               } />
             </Routes>
