@@ -4,21 +4,33 @@ import { X, Maximize, Play } from 'lucide-react';
 interface VideoModalProps {
   isOpen: boolean;
   onClose: () => void;
-  videoSrc: string;
+  videoSrc?: string;
   title?: string;
 }
 
 export default function VideoModal({ isOpen, onClose, videoSrc, title = "Demo Video" }: VideoModalProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [showFullscreenPrompt, setShowFullscreenPrompt] = useState(true);
+  const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
-    if (isOpen && videoRef.current) {
-      // Auto-play when modal opens
+    if (isOpen && videoRef.current && videoReady) {
+      // Auto-play when modal opens and video is ready
       const video = videoRef.current;
-      video.play().catch(console.error);
+      const playPromise = video.play();
+      
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log('Video started playing');
+          })
+          .catch((error) => {
+            console.error('Autoplay failed:', error);
+            // If autoplay fails, we'll show the play button
+          });
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, videoReady]);
 
   const handleVideoClick = async () => {
     if (videoRef.current && showFullscreenPrompt) {
@@ -104,22 +116,40 @@ export default function VideoModal({ isOpen, onClose, videoSrc, title = "Demo Vi
         
         {/* Video Container */}
         <div className="relative aspect-video bg-black">
-          <video
-            ref={videoRef}
-            src={videoSrc}
-            controls
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-contain cursor-pointer"
-            onClick={handleVideoClick}
-            onError={(e) => {
-              console.error('Video failed to load:', e);
-            }}
-          >
-            Your browser does not support the video tag.
-          </video>
+          {videoSrc ? (
+            <video
+              ref={videoRef}
+              src={videoSrc}
+              controls
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-contain cursor-pointer"
+              onClick={handleVideoClick}
+              onLoadedData={() => setVideoReady(true)}
+              onCanPlay={() => setVideoReady(true)}
+              onError={(e) => {
+                console.error('Video failed to load:', e);
+              }}
+            >
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-blue-900 to-purple-900 flex items-center justify-center">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/M6J1K-aeWJg?autoplay=1&loop=1&playlist=M6J1K-aeWJg&mute=1&controls=1"
+                title="Demo Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="cursor-pointer"
+                onClick={handleVideoClick}
+              ></iframe>
+            </div>
+          )}
           
           {/* Fullscreen Prompt Overlay */}
           {showFullscreenPrompt && (

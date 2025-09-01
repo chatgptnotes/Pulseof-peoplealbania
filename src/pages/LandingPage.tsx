@@ -423,7 +423,6 @@ export default function LandingPage() {
       <VideoModal
         isOpen={isVideoModalOpen}
         onClose={() => setIsVideoModalOpen(false)}
-        videoSrc="/demo-video.mp4"
         title="BETTROI Platform Demo"
       />
     </div>
