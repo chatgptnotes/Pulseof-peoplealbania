@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { X, Maximize } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { X, Maximize, Play } from 'lucide-react';
 
 interface VideoModalProps {
   isOpen: boolean;
@@ -10,31 +10,39 @@ interface VideoModalProps {
 
 export default function VideoModal({ isOpen, onClose, videoSrc, title = "Demo Video" }: VideoModalProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [showFullscreenPrompt, setShowFullscreenPrompt] = useState(true);
 
   useEffect(() => {
     if (isOpen && videoRef.current) {
-      // Auto-play and enter fullscreen when modal opens
+      // Auto-play when modal opens
       const video = videoRef.current;
       video.play().catch(console.error);
-      
-      // Request fullscreen
-      if (video.requestFullscreen) {
-        video.requestFullscreen().catch(console.error);
-      }
     }
   }, [isOpen]);
 
+  const handleVideoClick = async () => {
+    if (videoRef.current && showFullscreenPrompt) {
+      try {
+        await videoRef.current.requestFullscreen();
+        setShowFullscreenPrompt(false);
+      } catch (error) {
+        console.error('Fullscreen failed:', error);
+        setShowFullscreenPrompt(false);
+      }
+    }
+  };
+
   useEffect(() => {
     const handleFullscreenChange = () => {
-      // Close modal when user exits fullscreen
+      // Reset prompt when user exits fullscreen
       if (!document.fullscreenElement) {
-        onClose();
+        setShowFullscreenPrompt(true);
       }
     };
 
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
-  }, [onClose]);
+  }, []);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -104,14 +112,33 @@ export default function VideoModal({ isOpen, onClose, videoSrc, title = "Demo Vi
             loop
             muted
             playsInline
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain cursor-pointer"
+            onClick={handleVideoClick}
             onError={(e) => {
               console.error('Video failed to load:', e);
             }}
           >
             Your browser does not support the video tag.
           </video>
-        </div>
+          
+          {/* Fullscreen Prompt Overlay */}
+          {showFullscreenPrompt && (
+            <div className="absolute inset-0 bg-black/50 flex items-center justify-center pointer-events-none">
+              <div className="bg-white/90 backdrop-blur-sm rounded-lg p-6 text-center max-w-sm mx-4">
+                <div className="flex justify-center mb-3">
+                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                    <Maximize className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Click video for fullscreen
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Click anywhere on the video to enjoy the full experience
+                </p>
+              </div>
+            </div>
+          )}</div>
       </div>
     </div>
   );
