@@ -123,7 +123,6 @@ export default function VideoModal({ isOpen, onClose, videoSrc, title = "Demo Vi
               controls
               autoPlay
               loop
-              muted
               playsInline
               className="w-full h-full object-contain cursor-pointer"
               onClick={handleVideoClick}
@@ -140,7 +139,7 @@ export default function VideoModal({ isOpen, onClose, videoSrc, title = "Demo Vi
               <iframe
                 width="100%"
                 height="100%"
-                src="https://www.youtube.com/embed/M6J1K-aeWJg?autoplay=1&loop=1&playlist=M6J1K-aeWJg&mute=1&controls=1"
+                src="https://www.youtube.com/embed/M6J1K-aeWJg?autoplay=1&loop=1&playlist=M6J1K-aeWJg&controls=1&enablejsapi=1&origin=https://bettroi-voter-sentiment-dashboard.vercel.app"
                 title="Demo Video"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
