@@ -26,8 +26,8 @@ import {
 
 export default function LandingPage() {
   const handleDemoClick = () => {
-    // Open demo video in new tab or modal
-    window.open('https://youtu.be/demo-video-id', '_blank');
+    // Open demo video in new tab
+    window.open('https://youtu.be/M6J1K-aeWJg', '_blank');
   };
   const features = [
     {
