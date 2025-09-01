@@ -10,7 +10,6 @@ interface VideoModalProps {
 
 export default function VideoModal({ isOpen, onClose, videoSrc, title = "Demo Video" }: VideoModalProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [showFullscreenPrompt, setShowFullscreenPrompt] = useState(true);
   const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
@@ -33,28 +32,14 @@ export default function VideoModal({ isOpen, onClose, videoSrc, title = "Demo Vi
   }, [isOpen, videoReady]);
 
   const handleVideoClick = async () => {
-    if (videoRef.current && showFullscreenPrompt) {
+    if (videoRef.current) {
       try {
         await videoRef.current.requestFullscreen();
-        setShowFullscreenPrompt(false);
       } catch (error) {
         console.error('Fullscreen failed:', error);
-        setShowFullscreenPrompt(false);
       }
     }
   };
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      // Reset prompt when user exits fullscreen
-      if (!document.fullscreenElement) {
-        setShowFullscreenPrompt(true);
-      }
-    };
-
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
-  }, []);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -139,7 +124,7 @@ export default function VideoModal({ isOpen, onClose, videoSrc, title = "Demo Vi
               <iframe
                 width="100%"
                 height="100%"
-                src="https://www.youtube.com/embed/M6J1K-aeWJg?autoplay=1&loop=1&playlist=M6J1K-aeWJg&controls=1&enablejsapi=1&origin=https://bettroi-voter-sentiment-dashboard.vercel.app"
+                src="https://www.youtube.com/embed/M6J1K-aeWJg?autoplay=1&loop=1&playlist=M6J1K-aeWJg&controls=1&enablejsapi=1&start=0&rel=0&modestbranding=1"
                 title="Demo Video"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -150,24 +135,7 @@ export default function VideoModal({ isOpen, onClose, videoSrc, title = "Demo Vi
             </div>
           )}
           
-          {/* Fullscreen Prompt Overlay */}
-          {showFullscreenPrompt && (
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center pointer-events-none">
-              <div className="bg-white/90 backdrop-blur-sm rounded-lg p-6 text-center max-w-sm mx-4">
-                <div className="flex justify-center mb-3">
-                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-                    <Maximize className="w-6 h-6 text-white" />
-                  </div>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Click video for fullscreen
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Click anywhere on the video to enjoy the full experience
-                </p>
-              </div>
-            </div>
-          )}</div>
+</div>
       </div>
     </div>
   );
