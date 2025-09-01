@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import VideoModal from '../components/VideoModal';
 import { 
   ArrowRight, 
   BarChart3, 
@@ -25,9 +26,10 @@ import {
 } from 'lucide-react';
 
 export default function LandingPage() {
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+
   const handleDemoClick = () => {
-    // Open demo video in new tab
-    window.open('https://youtu.be/M6J1K-aeWJg', '_blank');
+    setIsVideoModalOpen(true);
   };
   const features = [
     {
@@ -416,6 +418,14 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
+
+      {/* Video Modal */}
+      <VideoModal
+        isOpen={isVideoModalOpen}
+        onClose={() => setIsVideoModalOpen(false)}
+        videoSrc="/demo-video.mp4"
+        title="BETTROI Platform Demo"
+      />
     </div>
   );
 }
