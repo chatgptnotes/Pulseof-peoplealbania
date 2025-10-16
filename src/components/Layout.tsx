@@ -83,8 +83,8 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex-shrink-0 flex items-center px-4">
               <BarChart3 className="w-8 h-8 text-blue-600" />
               <div className="ml-2">
-                <h1 className="text-xl font-bold text-gray-900">BETTROI</h1>
-                <p className="text-xs text-gray-500">Voter Sentiment Dashboard</p>
+                <h1 className="text-xl font-bold text-gray-900">Zëri i Vërtetë</h1>
+                <p className="text-xs text-gray-500">Pulpit i Sentimentit të Votuesve</p>
               </div>
             </div>
             <nav className="mt-5 px-2 space-y-1">
@@ -114,8 +114,8 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex items-center flex-shrink-0 px-4">
               <BarChart3 className="w-8 h-8 text-blue-600" />
               <div className="ml-2">
-                <h1 className="text-xl font-bold text-gray-900">BETTROI</h1>
-                <p className="text-xs text-gray-500">Voter Sentiment Dashboard</p>
+                <h1 className="text-xl font-bold text-gray-900">Zëri i Vërtetë</h1>
+                <p className="text-xs text-gray-500">Pulpit i Sentimentit të Votuesve</p>
               </div>
             </div>
             <nav className="mt-5 flex-1 px-2 bg-white space-y-1">
