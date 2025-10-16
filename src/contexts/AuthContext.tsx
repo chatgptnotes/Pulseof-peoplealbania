@@ -88,7 +88,10 @@ const mockUsers: User[] = [
 ];
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useLocalStorage<User | null>('user', null);
+  const [storedUser, setStoredUser] = useLocalStorage<User | null>('user', null);
+  // Ensure user has permissions array even if loaded from corrupted localStorage
+  const user = storedUser && storedUser.permissions ? storedUser : (storedUser ? { ...storedUser, permissions: [] } : null);
+  const setUser = setStoredUser;
   const [isLoading, setIsLoading] = useState(false);
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -113,7 +116,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const hasPermission = (permission: string): boolean => {
-    return user?.permissions.includes(permission) || user?.role === 'admin' || false;
+    return user?.permissions?.includes(permission) || user?.role === 'admin' || false;
   };
 
   const isWorker = (): boolean => {

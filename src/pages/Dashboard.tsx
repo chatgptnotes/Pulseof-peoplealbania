@@ -6,7 +6,7 @@ import CompetitorComparison from '../components/CompetitorComparison'
 import SentimentHeatmap from '../components/SentimentHeatmap'
 import InfluencerTracking from '../components/InfluencerTracking'
 import AlertsPanel from '../components/AlertsPanel'
-import IndiaMap from '../components/IndiaMap'
+import AngolaMap from '../components/AngolaMap'
 import ExportManager from '../components/ExportManager'
 import AdvancedChart from '../components/AdvancedChart'
 import { MobileNavigation, ResponsiveContainer, MobileCard, ResponsiveGrid, MobileButton, MobileStats } from '../components/MobileResponsive'
@@ -139,27 +139,25 @@ export default function Dashboard() {
     { label: 'Last Updated', value: liveMetrics?.lastUpdate ? new Date(liveMetrics.lastUpdate).toLocaleTimeString() : '2 min', change: 'ago', icon: Calendar, color: 'text-gray-600' }
   ]
 
-  const indiaMapData = [
-    { id: 'IN-UP', title: 'Uttar Pradesh', value: 68, sentiment: 0.68 },
-    { id: 'IN-MH', title: 'Maharashtra', value: 72, sentiment: 0.72 },
-    { id: 'IN-BR', title: 'Bihar', value: 45, sentiment: 0.45 },
-    { id: 'IN-WB', title: 'West Bengal', value: 61, sentiment: 0.61 },
-    { id: 'IN-MP', title: 'Madhya Pradesh', value: 58, sentiment: 0.58 },
-    { id: 'IN-TN', title: 'Tamil Nadu', value: 74, sentiment: 0.74 },
-    { id: 'IN-RJ', title: 'Rajasthan', value: 52, sentiment: 0.52 },
-    { id: 'IN-KA', title: 'Karnataka', value: 69, sentiment: 0.69 },
-    { id: 'IN-GJ', title: 'Gujarat', value: 71, sentiment: 0.71 },
-    { id: 'IN-AP', title: 'Andhra Pradesh', value: 63, sentiment: 0.63 },
-    { id: 'IN-OR', title: 'Odisha', value: 56, sentiment: 0.56 },
-    { id: 'IN-TG', title: 'Telangana', value: 67, sentiment: 0.67 },
-    { id: 'IN-KL', title: 'Kerala', value: 78, sentiment: 0.78 },
-    { id: 'IN-JH', title: 'Jharkhand', value: 49, sentiment: 0.49 },
-    { id: 'IN-AS', title: 'Assam', value: 54, sentiment: 0.54 },
-    { id: 'IN-PB', title: 'Punjab', value: 65, sentiment: 0.65 },
-    { id: 'IN-CT', title: 'Chhattisgarh', value: 51, sentiment: 0.51 },
-    { id: 'IN-HR', title: 'Haryana', value: 66, sentiment: 0.66 },
-    { id: 'IN-DL', title: 'Delhi', value: 73, sentiment: 0.73 },
-    { id: 'IN-HP', title: 'Himachal Pradesh', value: 62, sentiment: 0.62 }
+  const angolaMapData = [
+    { id: 'LUA', title: 'Luanda', value: 75, sentiment: 0.75 },
+    { id: 'BEN', title: 'Bengo', value: 65, sentiment: 0.65 },
+    { id: 'BGO', title: 'Benguela', value: 55, sentiment: 0.55 },
+    { id: 'BIE', title: 'Bié', value: 70, sentiment: 0.70 },
+    { id: 'CAB', title: 'Cabinda', value: 60, sentiment: 0.60 },
+    { id: 'CCU', title: 'Cuando Cubango', value: 45, sentiment: 0.45 },
+    { id: 'CNO', title: 'Cuanza Norte', value: 68, sentiment: 0.68 },
+    { id: 'CSU', title: 'Cuanza Sul', value: 62, sentiment: 0.62 },
+    { id: 'CNN', title: 'Cunene', value: 50, sentiment: 0.50 },
+    { id: 'HUA', title: 'Huambo', value: 72, sentiment: 0.72 },
+    { id: 'HUI', title: 'Huíla', value: 58, sentiment: 0.58 },
+    { id: 'LNO', title: 'Lunda Norte', value: 40, sentiment: 0.40 },
+    { id: 'LSU', title: 'Lunda Sul', value: 48, sentiment: 0.48 },
+    { id: 'MAL', title: 'Malanje', value: 63, sentiment: 0.63 },
+    { id: 'MOX', title: 'Moxico', value: 52, sentiment: 0.52 },
+    { id: 'NAM', title: 'Namibe', value: 66, sentiment: 0.66 },
+    { id: 'UIG', title: 'Uíge', value: 71, sentiment: 0.71 },
+    { id: 'ZAI', title: 'Zaire', value: 56, sentiment: 0.56 }
   ]
 
   return (
@@ -360,7 +358,7 @@ export default function Dashboard() {
           )}
           
           <div className="w-full">
-            <IndiaMap data={indiaMapData} height={400} />
+            <AngolaMap data={angolaMapData} height={400} />
           </div>
 
           <ResponsiveGrid cols={{ sm: 1, lg: 2, xl: 3 }}>

@@ -40,7 +40,7 @@ export default class ErrorBoundary extends Component<Props, State> {
           <AlertTriangle className="w-12 h-12 text-red-500 mb-4" />
           <h3 className="text-lg font-semibold text-red-900 mb-2">Something went wrong</h3>
           <p className="text-sm text-red-700 mb-4 text-center max-w-md">
-            {this.state.error?.message || 'An unexpected error occurred. Please try again.'}
+            {this.state.error?.message ? this.state.error.message : 'An unexpected error occurred. Please try again.'}
           </p>
           <button
             onClick={this.handleRetry}
