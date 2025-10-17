@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   CheckCircle,
@@ -17,7 +17,12 @@ import {
   Database,
   Flag,
   TrendingUp,
-  Activity
+  Activity,
+  Edit,
+  Save,
+  X,
+  Download,
+  Upload
 } from 'lucide-react';
 
 interface Feature {
@@ -31,9 +36,28 @@ interface Feature {
 }
 
 export default function FeaturesRoadmap() {
-  const [selectedSection, setSelectedSection] = useState<number | null>(null);
+  const [features, setFeatures] = useState<Feature[]>([]);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editForm, setEditForm] = useState<Feature | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
-  const features: Feature[] = [
+  // Load features from localStorage or use defaults
+  useEffect(() => {
+    const savedFeatures = localStorage.getItem('albanianFeatures');
+    if (savedFeatures) {
+      setFeatures(JSON.parse(savedFeatures));
+    } else {
+      setFeatures(defaultFeatures);
+    }
+  }, []);
+
+  // Save features to localStorage whenever they change
+  const saveFeatures = (updatedFeatures: Feature[]) => {
+    setFeatures(updatedFeatures);
+    localStorage.setItem('albanianFeatures', JSON.stringify(updatedFeatures));
+  };
+
+  const defaultFeatures: Feature[] = [
     {
       section: 1,
       module: 'Survey & Panel Engine',
@@ -207,6 +231,65 @@ export default function FeaturesRoadmap() {
     }
   ];
 
+  const handleEdit = (index: number) => {
+    setEditingIndex(index);
+    setEditForm({ ...features[index] });
+  };
+
+  const handleSave = () => {
+    if (editForm && editingIndex !== null) {
+      const updatedFeatures = [...features];
+      updatedFeatures[editingIndex] = editForm;
+      saveFeatures(updatedFeatures);
+      setEditingIndex(null);
+      setEditForm(null);
+    }
+  };
+
+  const handleCancel = () => {
+    setEditingIndex(null);
+    setEditForm(null);
+  };
+
+  const handleStatusChange = (index: number, status: 'completed' | 'partial' | 'pending') => {
+    const updatedFeatures = [...features];
+    updatedFeatures[index].status = status;
+    saveFeatures(updatedFeatures);
+  };
+
+  const exportData = () => {
+    const dataStr = JSON.stringify(features, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const exportFileDefaultName = 'features-roadmap.json';
+
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+  };
+
+  const importData = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const imported = JSON.parse(e.target?.result as string);
+          saveFeatures(imported);
+        } catch (error) {
+          alert('Invalid file format');
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const resetToDefaults = () => {
+    if (confirm('Are you sure you want to reset to default features? This will overwrite your current changes.')) {
+      saveFeatures(defaultFeatures);
+    }
+  };
+
   const getActionColor = (action: string) => {
     switch(action) {
       case 'keep': return 'bg-green-100 text-green-800 border-green-300';
@@ -236,8 +319,6 @@ export default function FeaturesRoadmap() {
     }
   };
 
-  const sections = [...new Set(features.map(f => f.section))].sort((a, b) => a - b);
-
   const stats = {
     total: features.length,
     completed: features.filter(f => f.status === 'completed').length,
@@ -245,18 +326,37 @@ export default function FeaturesRoadmap() {
     pending: features.filter(f => f.status === 'pending').length
   };
 
-  const completionRate = Math.round((stats.completed / stats.total) * 100);
+  const completionRate = features.length > 0
+    ? Math.round((stats.completed / stats.total) * 100)
+    : 0;
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-red-600 to-black text-white rounded-lg p-8">
-        <h1 className="text-3xl font-bold mb-2">
-          Zëri i Vërtetë i Shqipërisë - Features Roadmap
-        </h1>
-        <p className="text-red-100 mb-6">
-          Comprehensive Albanian political and social analytics platform
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">
+              Zëri i Vërtetë i Shqipërisë - Features Roadmap
+            </h1>
+            <p className="text-red-100">
+              Comprehensive Albanian political and social analytics platform
+            </p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setIsEditMode(!isEditMode)}
+              className={`px-4 py-2 rounded-lg flex items-center transition-colors ${
+                isEditMode
+                  ? 'bg-white text-red-600 hover:bg-red-50'
+                  : 'bg-white/20 text-white hover:bg-white/30'
+              }`}
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              {isEditMode ? 'Exit Edit Mode' : 'Edit Mode'}
+            </button>
+          </div>
+        </div>
 
         {/* Progress Overview */}
         <div className="grid grid-cols-4 gap-4 mt-6">
@@ -292,6 +392,40 @@ export default function FeaturesRoadmap() {
           </div>
         </div>
       </div>
+
+      {/* Data Management Tools */}
+      {isEditMode && (
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-gray-900">Data Management</h3>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={exportData}
+                className="px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center"
+              >
+                <Download className="w-3 h-3 mr-1" />
+                Export
+              </button>
+              <label className="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center cursor-pointer">
+                <Upload className="w-3 h-3 mr-1" />
+                Import
+                <input
+                  type="file"
+                  accept="application/json"
+                  onChange={importData}
+                  className="hidden"
+                />
+              </label>
+              <button
+                onClick={resetToDefaults}
+                className="px-3 py-1 text-sm bg-gray-600 text-white rounded-md hover:bg-gray-700"
+              >
+                Reset to Defaults
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Quick Access Links */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -368,52 +502,157 @@ export default function FeaturesRoadmap() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Link
                 </th>
+                {isEditMode && (
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {features.map((feature, index) => (
                 <tr key={index} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {feature.section}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      {feature.icon && <feature.icon className="w-4 h-4 mr-2 text-gray-400" />}
-                      <span className="text-sm font-medium text-gray-900">{feature.module}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getActionColor(feature.action)}`}>
-                      <span className="mr-1">{getActionIcon(feature.action)}</span>
-                      {feature.action.charAt(0).toUpperCase() + feature.action.slice(1)}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    <div className="max-w-md truncate" title={feature.description}>
-                      {feature.description}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      {getStatusIcon(feature.status)}
-                      <span className="ml-2 text-sm text-gray-600 capitalize">
-                        {feature.status}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    {feature.link ? (
-                      <Link
-                        to={feature.link}
-                        className="text-blue-600 hover:text-blue-800 flex items-center"
-                      >
-                        View
-                        <ExternalLink className="w-3 h-3 ml-1" />
-                      </Link>
-                    ) : (
-                      <span className="text-gray-400">—</span>
-                    )}
-                  </td>
+                  {editingIndex === index ? (
+                    // Edit Row
+                    <>
+                      <td className="px-6 py-4">
+                        <input
+                          type="number"
+                          value={editForm?.section}
+                          onChange={(e) => setEditForm({ ...editForm!, section: parseInt(e.target.value) })}
+                          className="w-16 px-2 py-1 border rounded"
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <input
+                          value={editForm?.module}
+                          onChange={(e) => setEditForm({ ...editForm!, module: e.target.value })}
+                          className="w-full px-2 py-1 border rounded"
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <select
+                          value={editForm?.action}
+                          onChange={(e) => setEditForm({ ...editForm!, action: e.target.value as any })}
+                          className="px-2 py-1 border rounded"
+                        >
+                          <option value="keep">Keep</option>
+                          <option value="add">Add</option>
+                          <option value="change">Change</option>
+                          <option value="upgrade">Upgrade</option>
+                        </select>
+                      </td>
+                      <td className="px-6 py-4">
+                        <textarea
+                          value={editForm?.description}
+                          onChange={(e) => setEditForm({ ...editForm!, description: e.target.value })}
+                          className="w-full px-2 py-1 border rounded"
+                          rows={2}
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <select
+                          value={editForm?.status}
+                          onChange={(e) => setEditForm({ ...editForm!, status: e.target.value as any })}
+                          className="px-2 py-1 border rounded"
+                        >
+                          <option value="completed">Completed</option>
+                          <option value="partial">Partial</option>
+                          <option value="pending">Pending</option>
+                        </select>
+                      </td>
+                      <td className="px-6 py-4">
+                        <input
+                          value={editForm?.link || ''}
+                          onChange={(e) => setEditForm({ ...editForm!, link: e.target.value || undefined })}
+                          placeholder="Optional"
+                          className="w-full px-2 py-1 border rounded"
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={handleSave}
+                            className="text-green-600 hover:text-green-800"
+                          >
+                            <Save className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={handleCancel}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </>
+                  ) : (
+                    // Display Row
+                    <>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {feature.section}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <span className="text-sm font-medium text-gray-900">{feature.module}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getActionColor(feature.action)}`}>
+                          <span className="mr-1">{getActionIcon(feature.action)}</span>
+                          {feature.action.charAt(0).toUpperCase() + feature.action.slice(1)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        <div className="max-w-md truncate" title={feature.description}>
+                          {feature.description}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {isEditMode ? (
+                          <select
+                            value={feature.status}
+                            onChange={(e) => handleStatusChange(index, e.target.value as any)}
+                            className="px-2 py-1 text-sm border rounded"
+                          >
+                            <option value="completed">Completed</option>
+                            <option value="partial">Partial</option>
+                            <option value="pending">Pending</option>
+                          </select>
+                        ) : (
+                          <div className="flex items-center">
+                            {getStatusIcon(feature.status)}
+                            <span className="ml-2 text-sm text-gray-600 capitalize">
+                              {feature.status}
+                            </span>
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        {feature.link ? (
+                          <Link
+                            to={feature.link}
+                            className="text-blue-600 hover:text-blue-800 flex items-center"
+                          >
+                            View
+                            <ExternalLink className="w-3 h-3 ml-1" />
+                          </Link>
+                        ) : (
+                          <span className="text-gray-400">—</span>
+                        )}
+                      </td>
+                      {isEditMode && (
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <button
+                            onClick={() => handleEdit(index)}
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                        </td>
+                      )}
+                    </>
+                  )}
                 </tr>
               ))}
             </tbody>

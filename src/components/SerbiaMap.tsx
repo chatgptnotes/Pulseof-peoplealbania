@@ -126,12 +126,12 @@ export default function SerbiaMap() {
           ))}
 
           {/* Legend */}
-          <g transform="translate(5, 85)">
+          <g transform="translate(5, 90)">
             <text className="text-xs fill-gray-600" x="0" y="0">Legenda:</text>
-            <circle cx="25" cy="-2" r="2" fill="#3b82f6" />
-            <text className="text-xs fill-gray-500" x="30" y="0">Opozicija</text>
-            <circle cx="60" cy="-2" r="2" fill="#f97316" />
-            <text className="text-xs fill-gray-500" x="65" y="0">Vlast</text>
+            <circle cx="50" cy="0" r="2" fill="#3b82f6" />
+            <text className="text-xs fill-gray-500" x="55" y="2">Opozicija</text>
+            <circle cx="50" cy="10" r="2" fill="#f97316" />
+            <text className="text-xs fill-gray-500" x="55" y="12">Vlast</text>
           </g>
         </svg>
 
