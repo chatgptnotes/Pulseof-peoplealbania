@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { BarChart3, AlertCircle, FileText, Settings, Menu, X, Home, PieChart, LogOut, User, ToggleLeft, Vote, Users, Briefcase, Share2, Target, Brain, Newspaper, Tv, MessageCircle, Crown, Bot, Shield, Zap, Phone, Activity, Database, UserCheck, Lightbulb, Search, TrendingUp, Eye, Download, Smartphone, MapPin, Flag } from 'lucide-react'
+import { BarChart3, AlertCircle, FileText, Settings, Menu, X, Home, PieChart, LogOut, User, ToggleLeft, Vote, Users, Briefcase, Share2, Target, Brain, Newspaper, Tv, MessageCircle, Crown, Bot, Shield, Zap, Phone, Activity, Database, UserCheck, Lightbulb, Search, TrendingUp, Eye, Download, Smartphone, MapPin, Flag, List } from 'lucide-react'
 import RealTimeIndicator from './RealTimeIndicator'
 import LoginModal from './LoginModal'
 import { useAuth } from '../contexts/AuthContext'
@@ -17,6 +17,7 @@ export default function Layout({ children }: LayoutProps) {
   const { user, logout } = useAuth()
 
   const navigation = [
+    { name: 'Features Roadmap', href: '/features', icon: List, current: location.pathname === '/features' },
     { name: 'Dashboard', href: '/dashboard', icon: Home, current: location.pathname === '/' || location.pathname === '/dashboard' },
     { name: 'Analytics', href: '/analytics', icon: PieChart, current: location.pathname === '/analytics' },
     { name: 'Voter Database', href: '/voter-database', icon: Users, current: location.pathname === '/voter-database' },

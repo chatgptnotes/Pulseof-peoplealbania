@@ -46,6 +46,7 @@ import CompetitorTracking from './components/CompetitorTracking'
 import RegionalMap from './pages/RegionalMap'
 import ElectionSimulationPage from './pages/ElectionSimulationPage'
 import AlbanianFeatures from './pages/AlbanianFeatures'
+import FeaturesRoadmap from './pages/FeaturesRoadmap'
 import { MobileContactBar } from './components/MobileResponsive'
 
 function App() {
@@ -284,6 +285,11 @@ function App() {
               <Route path="/albanian-features" element={
                 <Layout>
                   <AlbanianFeatures />
+                </Layout>
+              } />
+              <Route path="/features" element={
+                <Layout>
+                  <FeaturesRoadmap />
                 </Layout>
               } />
             </Routes>
