@@ -5,7 +5,7 @@ import {
   TrendingUp,
   AlertTriangle,
   Shield,
-  Handshake,
+  GitMerge,
   Map,
   Calendar,
   RefreshCw,
@@ -285,7 +285,7 @@ export default function ElectionSimulation() {
       {/* Coalition Scenarios */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <h4 className="text-md font-semibold text-gray-900 mb-4 flex items-center">
-          <Handshake className="w-4 h-4 mr-2" />
+          <GitMerge className="w-4 h-4 mr-2" />
           Mogući Koalicioni Scenariji
         </h4>
         <div className="grid grid-cols-3 gap-4">
