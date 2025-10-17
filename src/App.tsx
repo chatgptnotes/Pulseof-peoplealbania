@@ -44,6 +44,7 @@ import ExportManager from './components/ExportManager'
 import FieldWorkerApp from './components/FieldWorkerApp'
 import CompetitorTracking from './components/CompetitorTracking'
 import RegionalMap from './pages/RegionalMap'
+import ElectionSimulationPage from './pages/ElectionSimulationPage'
 import { MobileContactBar } from './components/MobileResponsive'
 
 function App() {
@@ -272,6 +273,11 @@ function App() {
               <Route path="/regional-map" element={
                 <Layout>
                   <RegionalMap />
+                </Layout>
+              } />
+              <Route path="/election-simulation" element={
+                <Layout>
+                  <ElectionSimulationPage />
                 </Layout>
               } />
             </Routes>

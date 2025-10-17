@@ -7,7 +7,10 @@ import SentimentHeatmap from '../components/SentimentHeatmap'
 import InfluencerTracking from '../components/InfluencerTracking'
 import AlertsPanel from '../components/AlertsPanel'
 import AlbaniaMap from '../components/AlbaniaMap'
+import PPIDisplay from '../components/PPIDisplay'
 import ExportManager from '../components/ExportManager'
+import ElectionSimulation from '../components/ElectionSimulation'
+import SerbiaMap from '../components/SerbiaMap'
 import AdvancedChart from '../components/AdvancedChart'
 import { MobileNavigation, ResponsiveContainer, MobileCard, ResponsiveGrid, MobileButton, MobileStats } from '../components/MobileResponsive'
 import { TrendingUp, Users, AlertTriangle, Target, Calendar, Brain, Zap, Globe, Lightbulb } from 'lucide-react'
@@ -351,8 +354,25 @@ export default function Dashboard() {
             </MobileCard>
           )}
           
-          <div className="w-full">
-            <AlbaniaMap data={albaniaMapData} height={400} />
+          {/* People Pulse Index Section */}
+          <ResponsiveGrid cols={{ sm: 1, lg: 2 }}>
+            <div className="lg:col-span-1">
+              <PPIDisplay />
+            </div>
+            <div className="lg:col-span-1">
+              <AlbaniaMap data={albaniaMapData} height={400} />
+            </div>
+          </ResponsiveGrid>
+
+          {/* Election Simulation Section for Serbia/Balkans */}
+          <div className="mt-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Serbia/Balkans Election Analysis</h2>
+            <div className="mb-6">
+              <SerbiaMap />
+            </div>
+            <div>
+              <ElectionSimulation />
+            </div>
           </div>
 
           <ResponsiveGrid cols={{ sm: 1, lg: 2, xl: 3 }}>

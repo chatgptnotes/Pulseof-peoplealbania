@@ -61,6 +61,11 @@ export default function LandingPage() {
       icon: Briefcase,
       title: 'Field Operations',
       description: 'Manage field workers, volunteers, and ground-level campaign activities with comprehensive tools.'
+    },
+    {
+      icon: Vote,
+      title: 'Election Simulation',
+      description: 'Advanced election forecasting for Serbia/Balkans with coalition scenarios and regional analysis.'
     }
   ];
 

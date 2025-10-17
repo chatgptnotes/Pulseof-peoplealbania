@@ -45,6 +45,7 @@ export default function Layout({ children }: LayoutProps) {
     { name: 'Field Worker App', href: '/field-worker-app', icon: Smartphone, current: location.pathname === '/field-worker-app' },
     { name: 'Competitor Tracking', href: '/competitor-tracking', icon: Target, current: location.pathname === '/competitor-tracking' },
     { name: 'Regional Map', href: '/regional-map', icon: MapPin, current: location.pathname === '/regional-map' },
+    { name: 'Election Simulation', href: '/election-simulation', icon: BarChart3, current: location.pathname === '/election-simulation' },
     { name: 'Reports', href: '/reports', icon: FileText, current: location.pathname === '/reports' },
     { name: 'Alerts', href: '/alerts', icon: AlertCircle, current: location.pathname === '/alerts' },
     ...(user?.permissions?.includes('submit_data') || user?.role === 'admin' ? [
