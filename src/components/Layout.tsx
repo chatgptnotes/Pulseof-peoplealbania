@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { BarChart3, AlertCircle, FileText, Settings, Menu, X, Home, PieChart, LogOut, User, ToggleLeft, Vote, Users, Briefcase, Share2, Target, Brain, Newspaper, Tv, MessageCircle, Crown, Bot, Shield, Zap, Phone, Activity, Database, UserCheck, Lightbulb, Search, TrendingUp, Eye, Download, Smartphone, MapPin } from 'lucide-react'
+import { BarChart3, AlertCircle, FileText, Settings, Menu, X, Home, PieChart, LogOut, User, ToggleLeft, Vote, Users, Briefcase, Share2, Target, Brain, Newspaper, Tv, MessageCircle, Crown, Bot, Shield, Zap, Phone, Activity, Database, UserCheck, Lightbulb, Search, TrendingUp, Eye, Download, Smartphone, MapPin, Flag } from 'lucide-react'
 import RealTimeIndicator from './RealTimeIndicator'
 import LoginModal from './LoginModal'
 import { useAuth } from '../contexts/AuthContext'
@@ -45,6 +45,7 @@ export default function Layout({ children }: LayoutProps) {
     { name: 'Field Worker App', href: '/field-worker-app', icon: Smartphone, current: location.pathname === '/field-worker-app' },
     { name: 'Competitor Tracking', href: '/competitor-tracking', icon: Target, current: location.pathname === '/competitor-tracking' },
     { name: 'Regional Map', href: '/regional-map', icon: MapPin, current: location.pathname === '/regional-map' },
+    { name: 'Albanian Analytics', href: '/albanian-features', icon: Flag, current: location.pathname === '/albanian-features' },
     { name: 'Election Simulation', href: '/election-simulation', icon: BarChart3, current: location.pathname === '/election-simulation' },
     { name: 'Reports', href: '/reports', icon: FileText, current: location.pathname === '/reports' },
     { name: 'Alerts', href: '/alerts', icon: AlertCircle, current: location.pathname === '/alerts' },

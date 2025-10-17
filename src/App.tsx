@@ -45,6 +45,7 @@ import FieldWorkerApp from './components/FieldWorkerApp'
 import CompetitorTracking from './components/CompetitorTracking'
 import RegionalMap from './pages/RegionalMap'
 import ElectionSimulationPage from './pages/ElectionSimulationPage'
+import AlbanianFeatures from './pages/AlbanianFeatures'
 import { MobileContactBar } from './components/MobileResponsive'
 
 function App() {
@@ -278,6 +279,11 @@ function App() {
               <Route path="/election-simulation" element={
                 <Layout>
                   <ElectionSimulationPage />
+                </Layout>
+              } />
+              <Route path="/albanian-features" element={
+                <Layout>
+                  <AlbanianFeatures />
                 </Layout>
               } />
             </Routes>
